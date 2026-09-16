@@ -186,25 +186,32 @@ CAMERA_POOL = [
 SUBJECT_POOL = [
     {
         "label": "a solo person (selfie/candid style)",
-        "queries": ["portrait face", "smiling person portrait",
-                    "young woman portrait", "young man portrait"],
+        "queries": ["professional portrait photography person",
+                    "natural candid portrait photography woman",
+                    "natural candid portrait photography man",
+                    "high quality lifestyle portrait photography"],
     },
     {
         "label": "a couple together",
-        "queries": ["couple portrait", "couple smiling together"],
+        "queries": ["professional couple portrait photography",
+                    "candid couple photography smiling"],
     },
     {
         "label": "a person with their pet",
-        "queries": ["person with dog portrait", "person with cat portrait",
-                     "woman with dog", "man with dog"],
+        "queries": ["professional portrait photography person with dog",
+                    "professional portrait photography person with cat",
+                    "lifestyle photography woman with dog",
+                    "lifestyle photography man with dog"],
     },
     {
         "label": "a small family/group",
-        "queries": ["family portrait", "family photo studio"],
+        "queries": ["professional family portrait photography studio",
+                    "candid family photography outdoors"],
     },
     {
         "label": "a person in an everyday candid moment",
-        "queries": ["candid portrait", "candid photo person"],
+        "queries": ["candid lifestyle photography person",
+                    "documentary style candid portrait photography"],
     },
 ]
 
@@ -404,16 +411,27 @@ one short line naming which AI app/tool this prompt works best on
 ===THEME_USED===
 short label for the theme/style used
 ===CAPTION===
-a short (1-3 sentence) social-media caption for X/Twitter, written the
-way a real person casually posting their own AI-art experiment would
-write it — NOT a formal instruction, NOT "Best on: X app" style. It
-should naturally mention which AI app/tool gives the best result (as a
-casual recommendation, e.g. "this one turned out great on GPT Image 2,
-just drop in your own photo") and it MUST include the exact literal
-token {LINK_TOKEN} somewhere natural in the text (e.g. "full prompt
-here: {LINK_TOKEN}") — do not replace or describe the token, just
-include it exactly as written so it can be swapped for a real link
-afterward. Keep it warm, casual, a little excited, never robotic."""
+a short (1-2 sentence) social-media caption for X/Twitter, written the
+way a real person casually posting a cool AI-art result would write it
+— NOT a formal instruction, NOT "Best on: X app" style, and NOT written
+as a personal narrative about the poster's own life (this account
+posts results using photos of many different people, never the
+poster's own face or story). Rules:
+- NEVER use "I", "we", "my", "our", "us" — describe the image/result
+  itself, not a personal experience (e.g. "This turned into a moody
+  noir portrait" not "I turned my photo into...").
+- Naturally mention which AI app/tool gives the best result, as a
+  casual aside (e.g. "works great on GPT Image 2").
+- Include 1 to 3 fitting emoji, placed naturally (not one after every
+  word).
+- Avoid dashes almost entirely. NEVER use a double hyphen "--" or an
+  em dash "—" anywhere (a dead giveaway of AI-generated text) — use
+  periods or commas instead. At most one single hyphen in the entire
+  caption, only if truly natural.
+- Do NOT include any link or the words "full prompt" — that line is
+  added separately afterward, so the caption must read as complete
+  and correct on its own without it.
+- Keep it warm, casual, a little excited, never robotic."""
     return [{"role": "system", "content": system},
             {"role": "user", "content": "Generate one new prompt now."}]
 
@@ -475,9 +493,10 @@ Review the CANDIDATE prompt below against these rules:
    appears (generic/fictional equivalents are fine).
 7. The CANDIDATE CAPTION must sound like a real person casually wrote
    it (not robotic/formal, not "Best on: X app" style), must naturally
-   mention an AI app recommendation, and must contain the exact literal
-   token {LINK_TOKEN} — reject if the caption is robotic-sounding or the
-   token is missing/altered.
+   mention an AI app recommendation, must contain at least one emoji,
+   must NOT use "I"/"we"/"my"/"our"/"us", must NOT contain a double
+   hyphen "--" or an em dash "—", and must NOT mention a link or "full
+   prompt" — reject if any of these are violated.
 
 CANDIDATE HOOK: {candidate.get('hook', '')}
 CANDIDATE PROMPT: {candidate.get('prompt', '')}
@@ -508,7 +527,9 @@ def fetch_from_pexels(api_key: str, query: str):
     photos = r.json().get("photos", [])
     if not photos:
         raise RuntimeError("Pexels: no results")
-    photo = random.choice(photos)
+    # bias toward the most relevant results (API returns best matches first)
+    top_photos = photos[:8] if len(photos) > 8 else photos
+    photo = random.choice(top_photos)
     url = photo["src"]["large"]
     img = requests.get(url, timeout=REQUEST_TIMEOUT)
     img.raise_for_status()
@@ -516,19 +537,26 @@ def fetch_from_pexels(api_key: str, query: str):
 
 
 def fetch_from_pixabay(api_key: str, query: str):
-    r = requests.get(
-        "https://pixabay.com/api/",
-        params={
+    def _search(editors_choice: bool):
+        params = {
             "key": api_key, "q": query, "image_type": "photo",
             "orientation": "vertical", "category": "people", "per_page": 20,
-        },
-        timeout=REQUEST_TIMEOUT,
-    )
-    r.raise_for_status()
-    hits = r.json().get("hits", [])
+            "order": "popular",
+        }
+        if editors_choice:
+            params["editors_choice"] = "true"
+        r = requests.get("https://pixabay.com/api/", params=params, timeout=REQUEST_TIMEOUT)
+        r.raise_for_status()
+        return r.json().get("hits", [])
+
+    # prefer hand-picked high-quality (editors_choice) results first
+    hits = _search(editors_choice=True)
+    if not hits:
+        hits = _search(editors_choice=False)
     if not hits:
         raise RuntimeError("Pixabay: no results")
-    hit = random.choice(hits)
+    top_hits = hits[:8] if len(hits) > 8 else hits
+    hit = random.choice(top_hits)
     url = hit["largeImageURL"]
     img = requests.get(url, timeout=REQUEST_TIMEOUT)
     img.raise_for_status()
@@ -539,14 +567,16 @@ def fetch_from_unsplash(access_key: str, query: str):
     r = requests.get(
         "https://api.unsplash.com/search/photos",
         headers={"Authorization": f"Client-ID {access_key}"},
-        params={"query": query, "per_page": 20, "orientation": "portrait"},
+        params={"query": query, "per_page": 20, "orientation": "portrait",
+                "order_by": "relevant"},
         timeout=REQUEST_TIMEOUT,
     )
     r.raise_for_status()
     results = r.json().get("results", [])
     if not results:
         raise RuntimeError("Unsplash: no results")
-    result = random.choice(results)
+    top_results = results[:8] if len(results) > 8 else results
+    result = random.choice(top_results)
     url = result["urls"]["regular"]
     img = requests.get(url, timeout=REQUEST_TIMEOUT)
     img.raise_for_status()
@@ -696,10 +726,9 @@ def main():
     paste_url = create_paste_link(prompt_text)
 
     if paste_url:
-        social_caption = caption_raw.replace(LINK_TOKEN, paste_url)
+        social_caption = f"{caption_raw}\n\nFull prompt here: {paste_url}"
     else:
-        # graceful fallback if dpaste failed: drop the token cleanly
-        social_caption = re.sub(r"\s*:?\s*" + re.escape(LINK_TOKEN), "", caption_raw).strip()
+        social_caption = caption_raw
 
     caption_html = f"<b>{hook}</b>\n#Prompt{pid:04d}"
     prompt_message_html = (
