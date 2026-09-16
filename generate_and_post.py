@@ -281,8 +281,13 @@ def get_free_models(api_key: str) -> list:
 
 
 def call_openrouter(api_key: str, free_models: list, messages: list,
-                     max_tokens: int = 900) -> str:
-    """Try free models one by one until one responds successfully."""
+                     max_tokens: int = 900, validator=None) -> str:
+    """Try free models one by one until one gives a response that passes
+    `validator` (if provided). A model returning non-empty but invalid
+    text (e.g. missing our required markers, or a music/audio model
+    replying with lyrics) is treated as a failure so the NEXT free model
+    gets tried, instead of wrongly locking onto the first bad responder
+    for every attempt."""
     last_err = None
     for model_id in free_models:
         try:
@@ -305,14 +310,28 @@ def call_openrouter(api_key: str, free_models: list, messages: list,
                 continue
             data = r.json()
             content = data["choices"][0]["message"]["content"]
-            if content and content.strip():
-                print(f"Used free model: {model_id}")
-                return content.strip()
-            last_err = f"{model_id} -> empty response"
+            if not content or not content.strip():
+                last_err = f"{model_id} -> empty response"
+                continue
+            content = content.strip()
+            if validator is not None and not validator(content):
+                last_err = f"{model_id} -> response failed validation (no markers found): {content[:150]}"
+                print(f"Skipping {model_id}: {last_err}")
+                continue
+            print(f"Used free model: {model_id}")
+            return content
         except Exception as e:
             last_err = f"{model_id} -> {e}"
             continue
     raise RuntimeError(f"All free models failed. Last error: {last_err}")
+
+
+def has_markers(markers: list):
+    """Returns a validator function checking that all given ===MARKER===
+    tags are present in the text."""
+    def _check(text: str) -> bool:
+        return all(re.search(rf"===\s*{re.escape(m)}\s*===", text) for m in markers)
+    return _check
 
 
 # ---------- Stage 1: generate ----------
@@ -683,6 +702,7 @@ def main():
                 build_generation_messages(recent_summaries, medium, mood,
                                            setting, twist, camera, subject["label"]),
                 max_tokens=4000,
+                validator=has_markers(GEN_MARKERS),
             )
             candidate = parse_delimited(gen_raw, GEN_MARKERS)
 
@@ -690,6 +710,7 @@ def main():
                 openrouter_key, free_models,
                 build_review_messages(candidate, recent_summaries),
                 max_tokens=1200,
+                validator=has_markers(REVIEW_MARKERS),
             )
             review = parse_delimited(review_raw, REVIEW_MARKERS)
         except Exception as e:
