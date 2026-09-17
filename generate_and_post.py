@@ -43,6 +43,8 @@ STATE_PATH = "state/recent_prompts.json"
 RECENT_KEEP = 10
 MAX_ATTEMPTS = 3
 REQUEST_TIMEOUT = 60
+TELEGRAM_MAX_MESSAGE_LEN = 4096
+TELEGRAM_MAX_CAPTION_LEN = 1024
 
 MEDIUM_POOL = [
     "straight photorealistic photography",
@@ -366,11 +368,17 @@ Additional hard rules:
   / their", or similar. All other details (clothing, pose, setting,
   style, mood) can be as specific and imaginative as you like.
 - NEVER name or depict a real celebrity, public figure, or real trademarked
-  brand/logo/franchise (e.g. no real magazine names, no real sports team or
-  sponsor logos, no real band/movie/character IP). If inspired by such an
-  aesthetic, describe it generically instead (e.g. "a vintage rock concert
-  poster look" instead of naming a real band; "a glossy fashion-magazine
-  cover layout" instead of a real magazine's name).
+  brand/logo/franchise INSIDE THE IMAGE ITSELF (e.g. no real magazine names,
+  no real sports team or sponsor logos, no real band/movie/character IP
+  appearing as content of the picture). If inspired by such an aesthetic,
+  describe it generically instead (e.g. "a vintage rock concert poster
+  look" instead of naming a real band; "a glossy fashion-magazine cover
+  layout" instead of a real magazine's name).
+  EXCEPTION: real AI image-generation tool/app names (GPT Image, Midjourney,
+  DALL-E, Gemini, Nano Banana, Stable Diffusion, etc.) are NOT covered by
+  this rule and MUST still be used normally in the APP field and in the
+  CAPTION's tool recommendation — naming the AI tool is a required part of
+  this task, not a prohibited brand mention.
 - For the identity-lock instruction, you may use strong, explicit,
   non-negotiable phrasing (even ALL-CAPS emphasis on key words like FACE,
   IDENTITY, PRESERVE) when it fits the prompt's tone — this level of
@@ -395,6 +403,19 @@ Hard requirements for the prompt text you write:
 Recently used prompt concepts (avoid repeating these ideas):
 {recent_block}
 
+Banned clichés — this system has already produced FAR too many of these;
+if your first instinct matches one of these, deliberately reject it and
+go a completely different direction:
+- a grand ornate ballroom / opera house / palace / theater interior with
+  dramatic arches, marble, red curtains, or a spiral/endless staircase
+- a giant nautilus shell, seashell, or spiral glass carriage
+- a floating object made of glowing lights/sparkles/stars (especially a
+  floating musical instrument), confetti or sparkles raining down around
+  a couple
+- a cosmic/starry bubble, orb, or portal enclosing the subject(s)
+Do not reach for "opulent fantasy interior + glowing floating object" as
+a safe default — it is the opposite of original at this point.
+
 Raw creative ingredients (these are NOT a named theme to reproduce
 literally — they are independent raw material for YOU to reinterpret,
 remix, subvert, or combine in an unexpected way; use as much or as
@@ -402,18 +423,20 @@ little of each as genuinely sparks a good original idea, and feel free
 to override any of them if a better original direction emerges):
 - medium/technique spark: {medium}
 - mood spark: {mood}
-- setting spark: {setting}
 - unexpected-twist spark: {twist}
 - camera/lens spark: {camera}
-Do not just describe these four things literally back-to-back — use
-them as a starting spark and then invent your own specific, surprising
-concept on top of them.
+Do not just describe these things literally back-to-back — use them as
+a starting spark and then invent your own specific, surprising concept
+on top of them.
 
-Required subject constraint (this one must be followed — it determines
-which real base photo gets paired with your prompt, so the prompt must
-genuinely feature this subject type, though you're free to invent
-anything about the setting/style/story around them):
-- subject: {subject}
+Required constraints (these two MUST be genuinely, recognizably used —
+not paraphrased away into something else, and not overridden by the
+banned-cliché defaults above):
+- subject: {subject} (this determines which real base photo gets paired
+  with your prompt)
+- setting/environment: {setting} (the scene must actually take place
+  somewhere that genuinely matches this, though the specific details,
+  props, and story within it are yours to invent freely)
 
 Do NOT show your reasoning or thinking process, and do NOT use JSON.
 Output ONLY the final answer, starting immediately with ===HOOK===, in
@@ -486,7 +509,7 @@ def parse_delimited(text: str, markers: list) -> dict:
 
 # ---------- Stage 2: self-review ----------
 
-def build_review_messages(candidate: dict, recent_summaries: list) -> list:
+def build_review_messages(candidate: dict, recent_summaries: list, setting: str) -> list:
     recent_block = (
         "\n".join(f"- {s}" for s in recent_summaries)
         if recent_summaries else "(none yet)"
@@ -507,9 +530,24 @@ Review the CANDIDATE prompt below against these rules:
    ethnicity anywhere (e.g. "a young woman", "an elderly man") — reject
    if any such demographic detail appears; it should say "the person
    from the reference image" or similar neutral phrasing instead.
+5b. It must genuinely, recognizably take place in/around this required
+    setting: "{setting}" — reject if the scene doesn't match this at all.
+5c. REJECT if the prompt describes any of these overused clichés: a
+    grand ornate ballroom/opera-house/palace/theater interior with
+    dramatic arches or a spiral staircase; a giant nautilus shell or
+    seashell/glass carriage; a floating glowing object (especially a
+    floating musical instrument) with sparkles/confetti around a couple;
+    a cosmic/starry bubble or orb enclosing the subject(s). This system
+    has produced far too many of these — treat them as an automatic
+    REVISE regardless of other quality.
 6. It must NOT name or depict any real celebrity, public figure, or real
-   trademarked brand/logo/franchise — reject if any real name/brand
-   appears (generic/fictional equivalents are fine).
+   trademarked brand/logo/franchise AS CONTENT WITHIN THE IMAGE ITSELF
+   (e.g. a real sports team, band, movie character, magazine name as a
+   depicted object) — reject if any such real name/brand appears as
+   image content. Do NOT reject for naming a real AI image-generation
+   tool/app (GPT Image, Midjourney, DALL-E, Gemini, Nano Banana, Stable
+   Diffusion, etc.) in the APP field or in the caption's tool
+   recommendation — that is required and always allowed.
 7. The CANDIDATE CAPTION must sound like a real person casually wrote
    it (not robotic/formal, not "Best on: X app" style), must naturally
    mention an AI app recommendation, must contain at least one emoji,
@@ -660,6 +698,12 @@ def telegram_send_message(token: str, chat_id: str, text_html: str) -> None:
     r.raise_for_status()
 
 
+def safe_truncate_html(text: str, limit: int) -> str:
+    if len(text) <= limit:
+        return text
+    return text[:max(limit - 1, 0)] + "…"
+
+
 def escape_html(text: str) -> str:
     return (text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
 
@@ -708,7 +752,7 @@ def main():
 
             review_raw = call_openrouter(
                 openrouter_key, free_models,
-                build_review_messages(candidate, recent_summaries),
+                build_review_messages(candidate, recent_summaries, setting),
                 max_tokens=1200,
                 validator=has_markers(REVIEW_MARKERS),
             )
@@ -751,19 +795,32 @@ def main():
     else:
         social_caption = caption_raw
 
-    caption_html = f"<b>{hook}</b>\n#Prompt{pid:04d}"
-    prompt_message_html = (
-        f"#Prompt{pid:04d} | Best on: {app_rec}\n\n"
-        f"<code>{escape_html(prompt_text)}</code>"
-    )
-    social_caption_html = (
-        f"#Prompt{pid:04d} social caption (tap to copy, ready for X/Twitter):\n\n"
-        f"<code>{escape_html(social_caption)}</code>"
-    )
+    caption_html = safe_truncate_html(f"<b>{hook}</b>\n#Prompt{pid:04d}",
+                                       TELEGRAM_MAX_CAPTION_LEN)
 
-    telegram_send_photo(tg_token, tg_chat, image_bytes, caption_html)
-    telegram_send_message(tg_token, tg_chat, prompt_message_html)
-    telegram_send_message(tg_token, tg_chat, social_caption_html)
+    prompt_header = f"#Prompt{pid:04d} | Best on: {app_rec}\n\n"
+    prompt_footer = f"\n\nFull prompt link: {paste_url}" if paste_url else ""
+    # reserve room for header/footer/code-tags so the whole message fits
+    budget = TELEGRAM_MAX_MESSAGE_LEN - len(prompt_header) - len(prompt_footer) - len("<code></code>") - 20
+    prompt_body = escape_html(prompt_text)
+    if len(prompt_body) > budget:
+        prompt_body = prompt_body[:max(budget, 0)] + "…"
+    prompt_message_html = f"{prompt_header}<code>{prompt_body}</code>{prompt_footer}"
+
+    caption_header = f"#Prompt{pid:04d} social caption (tap to copy, ready for X/Twitter):\n\n"
+    budget2 = TELEGRAM_MAX_MESSAGE_LEN - len(caption_header) - len("<code></code>") - 20
+    caption_body = escape_html(social_caption)
+    if len(caption_body) > budget2:
+        caption_body = caption_body[:max(budget2, 0)] + "…"
+    social_caption_html = f"{caption_header}<code>{caption_body}</code>"
+
+    try:
+        telegram_send_photo(tg_token, tg_chat, image_bytes, caption_html)
+        telegram_send_message(tg_token, tg_chat, prompt_message_html)
+        telegram_send_message(tg_token, tg_chat, social_caption_html)
+    except Exception as e:
+        print(f"::error::Telegram delivery failed for #Prompt{pid:04d}: {e}")
+        return
     print(f"Posted #Prompt{pid:04d} (base image source: {source}).")
 
     # update state
