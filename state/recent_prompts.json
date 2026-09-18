@@ -49,7 +49,25 @@
       "id": 39,
       "summary": "[Thermal Charcoal Monastic Sketch] Monastery shadows meet pet companion",
       "posted_at": "2026-09-18T18:22:36.208492+00:00"
+    },
+    {
+      "id": 40,
+      "summary": "[Orchard Collage Slow Shutter] Orchard collage slow shutter torn paper",
+      "posted_at": "2026-09-18T19:47:04.761808+00:00",
+      "signature": "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
+      "ingredients": {
+        "medium": "collage with torn paper textures",
+        "mood": "grounded and authentic",
+        "setting": "an orchard in full bloom",
+        "twist": "an old repair mark becomes part of the composition",
+        "camera": "slow-shutter candid motion",
+        "subject": "a person interacting with an interesting object"
+      },
+      "image_source": "Pexels"
     }
   ],
-  "last_id": 39
+  "last_id": 40,
+  "used_signatures": [
+    "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96"
+  ]
 }
