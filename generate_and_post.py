@@ -153,16 +153,18 @@ TWIST_POOL = [
     "the scale of something in the scene is wildly exaggerated (tiny or giant)",
     "part of the scene appears to be dissolving, melting, or made of an unexpected material",
     "a reflection (mirror, water, glass) shows something different from reality",
-    "light comes from an impossible or unidentifiable source",
+    "a single practical light source casts an oddly specific, meaningful shadow shape",
     "time-of-day or season is deliberately mismatched between foreground and background",
     "the subject seems to be interacting with an echo of their own past or future self",
     "only one object in the frame stays in perfect focus while everything else dissolves away",
     "gravity visibly runs sideways for a single element",
     "the color palette inverts for exactly one object in the scene",
-    "a swarm of tiny lights/fireflies subtly forms a recognizable shape",
     "the image looks like it's torn, revealing a different scene underneath",
-    "unusual localized weather happens only in a small radius around the subject",
-    "a clock, calendar, or other time-marker in the scene shows something impossible",
+    "an ordinary object is placed somewhere absurdly mundane-but-wrong (e.g. a bicycle in a swimming pool, a sofa on a rooftop)",
+    "the subject's outfit or activity sharply mismatches the surroundings (formal wear in a junkyard, streetwear in a cathedral)",
+    "a small, odd background detail quietly steals part of the spotlight",
+    "an obsolete analog technology (a boombox, a typewriter, a rotary phone, a cassette deck) anchors the scene",
+    "indoor weather: rain, snow, or fog appears inside a space where it shouldn't",
     "an everyday small object appears at impossible architectural scale",
     "the subject appears doubled or mirrored in a way that shouldn't be physically possible",
 ]
@@ -278,8 +280,25 @@ def get_free_models(api_key: str) -> list:
             continue
         if prompt_cost == 0 and completion_cost == 0:
             free.append(m["id"])
-    random.shuffle(free)
-    return free
+
+    # prioritize larger/more capable-sounding models first — small/mini
+    # models tend to fall back on generic cliches more often and follow
+    # detailed instructions less reliably
+    def _size_tier(model_id: str) -> int:
+        name = model_id.lower()
+        if any(k in name for k in ("mini", "lite", "nano", "tiny", "small", "1b", "2b", "3b")):
+            return 2  # try last
+        if any(k in name for k in ("large", "super", "ultra", "max", "pro",
+                                     "xl", "70b", "72b", "90b", "405b", "120b")):
+            return 0  # try first
+        return 1  # unknown size, middle priority
+
+    tiers = {0: [], 1: [], 2: []}
+    for model_id in free:
+        tiers[_size_tier(model_id)].append(model_id)
+    for t in tiers.values():
+        random.shuffle(t)
+    return tiers[0] + tiers[1] + tiers[2]
 
 
 def call_openrouter(api_key: str, free_models: list, messages: list,
@@ -394,11 +413,14 @@ Hard requirements for the prompt text you write:
   placeholders like [X] left unfilled.
 - Must feel completely original — do NOT repeat or lightly reword any
   idea from the recent prompts list below.
-- Your own imagination is the primary source, not any hint given below.
-  Invent concepts, mediums, formats, and visual metaphors nobody has
-  suggested to you. Combine unrelated ideas, invent new visual formats,
-  reference art movements, photography styles, or storytelling devices
-  freely.
+- Build your concept PRIMARILY from the required subject/setting below
+  plus the sparks given further down — invent specific, grounded,
+  concrete original details on TOP of them (an unusual prop, a precise
+  gesture, a specific texture or color story, an odd but believable
+  detail). Do NOT invent an entirely different unrelated fantasy world
+  from scratch and do NOT default to "magical/cosmic/epic" as your
+  go-to interpretation of "creative" — specific and grounded beats
+  generic and fantastical every time.
 
 Recently used prompt concepts (avoid repeating these ideas):
 {recent_block}
@@ -406,13 +428,22 @@ Recently used prompt concepts (avoid repeating these ideas):
 Banned clichés — this system has already produced FAR too many of these;
 if your first instinct matches one of these, deliberately reject it and
 go a completely different direction:
+- ANY cosmic/celestial/space aesthetic at all: starfields, nebulas,
+  galaxies, planets, astrology/zodiac motifs, glowing particles, magical
+  sparkle/light ribbons, crystal balls or orbs, "portal to another
+  realm" framing — UNLESS the required setting is explicitly a real
+  night sky or space environment. Do not reach for "cosmic/ethereal/
+  magical" as your generic fallback for "creative" — it is the single
+  most overused direction this system has produced.
 - a grand ornate ballroom / opera house / palace / theater interior with
   dramatic arches, marble, red curtains, or a spiral/endless staircase
 - a giant nautilus shell, seashell, or spiral glass carriage
 - a floating object made of glowing lights/sparkles/stars (especially a
   floating musical instrument), confetti or sparkles raining down around
   a couple
-- a cosmic/starry bubble, orb, or portal enclosing the subject(s)
+- gold/amber opulence used as a generic "premium" signal (gilded edges,
+  golden light rays, ornate gold objects) when nothing about the
+  subject/setting actually calls for luxury or wealth
 Do not reach for "opulent fantasy interior + glowing floating object" as
 a safe default — it is the opposite of original at this point.
 
@@ -532,14 +563,18 @@ Review the CANDIDATE prompt below against these rules:
    from the reference image" or similar neutral phrasing instead.
 5b. It must genuinely, recognizably take place in/around this required
     setting: "{setting}" — reject if the scene doesn't match this at all.
-5c. REJECT if the prompt describes any of these overused clichés: a
-    grand ornate ballroom/opera-house/palace/theater interior with
-    dramatic arches or a spiral staircase; a giant nautilus shell or
-    seashell/glass carriage; a floating glowing object (especially a
-    floating musical instrument) with sparkles/confetti around a couple;
-    a cosmic/starry bubble or orb enclosing the subject(s). This system
-    has produced far too many of these — treat them as an automatic
-    REVISE regardless of other quality.
+5c. REJECT if the prompt uses ANY cosmic/celestial/space aesthetic
+    (starfields, nebulas, galaxies, astrology motifs, glowing magical
+    particles/sparkle ribbons, crystal balls/orbs, "portal" framing)
+    UNLESS the required setting is explicitly a night sky/space
+    environment. Also REJECT: a grand ornate ballroom/opera-house/
+    palace/theater interior with dramatic arches or a spiral staircase;
+    a giant nautilus shell or seashell/glass carriage; a floating
+    glowing object (especially a musical instrument) with sparkles/
+    confetti around a couple; gold/amber "opulence" used as a generic
+    premium signal with no real reason. This system has produced far
+    too many of these — treat any of them as an automatic REVISE
+    regardless of other quality.
 6. It must NOT name or depict any real celebrity, public figure, or real
    trademarked brand/logo/franchise AS CONTENT WITHIN THE IMAGE ITSELF
    (e.g. a real sports team, band, movie character, magazine name as a
