@@ -79,10 +79,26 @@
         "subject": "a small family or friend group"
       },
       "image_source": "Pexels"
+    },
+    {
+      "id": 42,
+      "summary": "[Selective-Focus Archive Mischief] The tray stole the whole story",
+      "posted_at": "2026-09-18T21:13:47.028023+00:00",
+      "signature": "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
+      "ingredients": {
+        "medium": "natural-window-light photography",
+        "mood": "playful and mischievous",
+        "setting": "a small newspaper archive room",
+        "twist": "only one object remains perfectly sharp while nearby details soften away",
+        "camera": "off-center rule-of-thirds framing",
+        "subject": "a solo person in a natural candid portrait"
+      },
+      "image_source": "Pexels"
     }
   ],
-  "last_id": 41,
+  "last_id": 42,
   "used_signatures": [
+    "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
     "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
     "811b2d63d680f6bc1682d607057241111b8d9e5a932073c85b7bc2957c76fb1d"
   ]
