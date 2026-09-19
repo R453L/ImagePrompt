@@ -755,7 +755,7 @@ def fingerprint_components(
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
-FUSION_CHANCE = 0.4  # how often two mediums get forcibly fused into one hybrid style
+FUSION_CHANCE = 0.25  # how often two mediums get forcibly fused into one hybrid style
 
 
 def choose_unique_ingredients(state: dict):
