@@ -217,20 +217,49 @@
         "subject": "a person walking through the environment"
       },
       "image_source": "Pexels"
+    },
+    {
+      "id": 51,
+      "summary": "[Rooftop Kinetic Portrait] Restless rooftop kinetic portrait with vintage twist",
+      "posted_at": "2026-09-19T13:02:04.103086+00:00",
+      "signature": "290ec8e20950a77a110fff3f54c4e71b3811c55313266e0b9857406c55c5b56f",
+      "ingredients": {
+        "medium": "fine-art portrait photography",
+        "fusion_medium": "",
+        "mood": "restless and kinetic",
+        "setting": "a rooftop parking deck after sunset",
+        "twist": "the scene contains one deliberately outdated item among contemporary objects",
+        "camera": "medium shot emphasizing gesture and hands",
+        "subject": "a small family or friend group"
+      },
+      "image_source": "Tiyashi (E23E4499-163D-43D4-964A-7B460756AFEF.png)"
     }
   ],
-  "last_id": 50,
+  "last_id": 51,
   "used_signatures": [
+    "290ec8e20950a77a110fff3f54c4e71b3811c55313266e0b9857406c55c5b56f",
+    "bba4e26e6227a1f4a6159f42525a1bedd5b224dbed4226b8f958d85c0b1f5351",
+    "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
+    "cd8b7151ed9213c61a7f6ee1766eea1ef2ef6f40825c16bd1d23c63583b5654b",
+    "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
     "811b2d63d680f6bc1682d607057241111b8d9e5a932073c85b7bc2957c76fb1d",
     "1a12bf72a521b9689c983b23e7fb3a72cc5f1bef30e3001dc6ed7e7f3752d7ba",
-    "bbc42289325f136f888bfe54fa10c238ab541d25ff75925f581395584f367bc4",
-    "20802162500d3accbf6a0632e89a01190dd2d6d94e87eddc97ac475fe23193d0",
-    "bba4e26e6227a1f4a6159f42525a1bedd5b224dbed4226b8f958d85c0b1f5351",
-    "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
-    "cd58f0a13172137727f96ffc7e9739472a93c7e5cea5d31b57c0a5d85aaf1173",
-    "cd8b7151ed9213c61a7f6ee1766eea1ef2ef6f40825c16bd1d23c63583b5654b",
-    "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
     "7cd8fb89c3ea8494c712417d5dea2663bea3cb1f5cc38da4616d36d7540bfccd",
-    "a317e09d680a182ec74926b75221c6d36df5da3ae9b0b5049b14efc743c7e569"
-  ]
+    "cd58f0a13172137727f96ffc7e9739472a93c7e5cea5d31b57c0a5d85aaf1173",
+    "bbc42289325f136f888bfe54fa10c238ab541d25ff75925f581395584f367bc4",
+    "a317e09d680a182ec74926b75221c6d36df5da3ae9b0b5049b14efc743c7e569",
+    "20802162500d3accbf6a0632e89a01190dd2d6d94e87eddc97ac475fe23193d0"
+  ],
+  "ingredient_last_used": {
+    "fine-art portrait photography": "2026-09-19T13:02:04.103105+00:00",
+    "restless and kinetic": "2026-09-19T13:02:04.103105+00:00",
+    "a rooftop parking deck after sunset": "2026-09-19T13:02:04.103105+00:00",
+    "the scene contains one deliberately outdated item among contemporary objects": "2026-09-19T13:02:04.103105+00:00",
+    "medium shot emphasizing gesture and hands": "2026-09-19T13:02:04.103105+00:00",
+    "sea green, weathered wood, gray and off-white": "2026-09-19T13:02:04.103105+00:00",
+    "oxidized metal": "2026-09-19T13:02:04.103105+00:00",
+    "a fabric measuring tape": "2026-09-19T13:02:04.103105+00:00",
+    "holding an ordinary object at waist height": "2026-09-19T13:02:04.103105+00:00",
+    "a crisp shirt with practical trousers": "2026-09-19T13:02:04.103105+00:00"
+  }
 }
