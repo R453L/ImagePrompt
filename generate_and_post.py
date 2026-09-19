@@ -1137,6 +1137,10 @@ The caption must:
 - never include a URL
 - never use an em dash
 - never use a double hyphen
+- end with 2 to 4 relevant, high-traffic discovery hashtags (e.g. a mix
+  of broad ones like #AIart #AIphotography #AIgenerated and one tied to
+  the specific AI tool named in APP, like #GPTImage2 or #Midjourney) —
+  hashtags are separate from the sentence, space-separated, no commas
 
 OUTPUT EXACTLY THIS FORMAT:
 
@@ -1264,6 +1268,8 @@ APPROVE only if ALL requirements pass.
 19. Caption does not contain "full prompt".
 20. Caption has no URL.
 21. Caption has no em dash and no double hyphen.
+21b. Caption ends with 2 to 4 relevant discovery hashtags (space
+     separated) — REVISE if hashtags are missing.
 22. WOW-FACTOR: score how scroll-stopping, share-worthy and visually
     exciting the resulting image would be, from 1 (bland/forgettable,
     technically fine but nobody would stop scrolling) to 10 (genuinely
@@ -1432,7 +1438,10 @@ def main():
     tg_token = env("TELEGRAM_BOT_TOKEN")
     tg_chat = env("TELEGRAM_CHAT_ID")
 
-    openrouter_key = env("OPENROUTER_API_KEY")
+    openrouter_keys_raw = env("OPENROUTER_API_KEY")
+    openrouter_keys = [k.strip() for k in openrouter_keys_raw.split(",") if k.strip()]
+    openrouter_key = random.choice(openrouter_keys)
+    print(f"Using 1 of {len(openrouter_keys)} configured OpenRouter key(s) for this run.")
 
     # Stock-photo APIs (Pexels/Pixabay/Unsplash) are no longer used —
     # base images now come from the local Tiyashi reference photo set.
@@ -1467,10 +1476,19 @@ def main():
 
     used_signatures = set(state.get("used_signatures", []))
 
-    free_models = get_free_models(openrouter_key)
+    free_models = []
+    key_order = [openrouter_key] + [k for k in openrouter_keys if k != openrouter_key]
+    for key_attempt in key_order:
+        try:
+            free_models = get_free_models(key_attempt)
+            openrouter_key = key_attempt
+            break
+        except Exception as exc:
+            print(f"OpenRouter key ending in ...{key_attempt[-4:]} failed to list models: {exc}")
+            continue
 
     if not free_models:
-        print("::error::No free OpenRouter models currently available.")
+        print("::error::No free OpenRouter models currently available (all configured keys failed).")
         sys.exit(1)
 
     print(f"Found {len(free_models)} free OpenRouter models.")
@@ -1602,10 +1620,12 @@ def main():
     prompt_html = escape_html(prompt_text)
 
     paste_url = create_paste_link(prompt_text)
-    if paste_url:
-        social_caption_raw = f"{caption_raw}\n\nFull prompt here: {paste_url}"
-    else:
-        social_caption_raw = caption_raw
+    # IMPORTANT: the link is deliberately kept OUT of the main caption.
+    # X/Twitter (and most platforms) algorithmically suppress reach for
+    # posts containing an outbound link — keeping the main post link-free
+    # and posting the link as the first reply/comment instead preserves
+    # reach while still making the full prompt available.
+    social_caption_raw = caption_raw
     caption_html_raw = escape_html(social_caption_raw)
 
     # Image caption stays short.
@@ -1662,6 +1682,16 @@ def main():
         f"<code>{caption_html_raw}</code>"
     )
 
+    if paste_url:
+        reply_link_message = (
+            f"#Prompt{prompt_id:04d} — post this link as the FIRST REPLY/COMMENT "
+            f"on X, not inside the main post (links inside the main post get "
+            f"suppressed by the algorithm and hurt reach):\n\n"
+            f"Full prompt: {escape_html(paste_url)}"
+        )
+    else:
+        reply_link_message = None
+
     # --------------------------------------------------------
     # TELEGRAM DELIVERY
     # --------------------------------------------------------
@@ -1685,6 +1715,13 @@ def main():
             tg_chat,
             social_message,
         )
+
+        if reply_link_message:
+            telegram_send_message(
+                tg_token,
+                tg_chat,
+                reply_link_message,
+            )
 
     except Exception as exc:
         print(
