@@ -197,6 +197,63 @@ MEDIUM_POOL = [
     "daily planner/mood-tracker aesthetic with small icons and short captions",
 ]
 
+# The audience strongly prefers bold, obviously-crafted/artistic results
+# over results that just look like an ordinary real photo. These items
+# still look essentially like a normal photograph (grain/color/lighting
+# treatments aside) — everything else in MEDIUM_POOL is treated as the
+# "crazy/stylized" bucket and gets picked far more often (see MEDIUM_STYLE_BIAS).
+REALISTIC_MEDIUM_ITEMS = {
+    "straight photorealistic editorial photography",
+    "cinematic documentary photography",
+    "35mm analog street photography",
+    "120 medium-format portrait photography",
+    "large-format studio photography",
+    "instant-film snapshot aesthetic",
+    "black-and-white darkroom photography",
+    "high-contrast film-noir photography",
+    "soft pastel film photography",
+    "vintage color-negative photography",
+    "cross-processed analog film aesthetic",
+    "expired-film light-leak aesthetic",
+    "editorial fashion photography",
+    "architectural photography",
+    "photojournalistic realism",
+    "travel-magazine photography",
+    "lifestyle campaign photography",
+    "minimalist studio photography",
+    "high-key commercial photography",
+    "low-key portrait photography",
+    "environmental portrait photography",
+    "fine-art portrait photography",
+    "street-documentary photography",
+    "handheld candid photography",
+    "macro photography",
+    "telephoto compression photography",
+    "aerial drone photography",
+    "long-exposure photography",
+    "motion-blur photography",
+    "reflection-based photography",
+    "silhouette photography",
+    "shadow-study photography",
+    "architectural light photography",
+    "natural-window-light photography",
+    "softbox studio photography",
+    "hard-light studio photography",
+    "rim-lit studio photography",
+    "neon practical-light photography",
+    "mixed-color-temperature photography",
+    "contemporary luxury editorial photography",
+    "contact-sheet photography",
+    "extreme action-camera selfie composition (motion, wide-angle distortion)",
+}
+
+REALISTIC_MEDIUM_POOL = [m for m in MEDIUM_POOL if m in REALISTIC_MEDIUM_ITEMS]
+STYLIZED_MEDIUM_POOL = [m for m in MEDIUM_POOL if m not in REALISTIC_MEDIUM_ITEMS]
+
+# Fraction of the time the wild/stylized bucket gets picked instead of
+# a grounded realistic-photo medium.
+MEDIUM_STYLE_BIAS = 0.75
+
 MOOD_POOL = [
     "playful and mischievous",
     "melancholic and nostalgic",
@@ -249,6 +306,46 @@ MOOD_POOL = [
     "nostalgic and tactile",
     "energetic but controlled",
 ]
+
+# Generic (no real-brand/holiday-name) seasonal/occasion flavor, keyed by
+# UTC month number. When the current month has entries, there's a boosted
+# chance (SEASONAL_CHANCE) the setting comes from here instead of the
+# regular SETTING_POOL — keeps content feeling timely without hardcoding
+# a specific year, so this stays relevant indefinitely, just update the
+# lists occasionally to match whatever is actually trending that season.
+SEASONAL_POOL = {
+    1: ["a fresh-start morning with crisp winter light",
+        "a quiet snowy street at dawn"],
+    2: ["a soft romantic pastel-lit indoor scene",
+        "a cozy candlelit evening setting"],
+    3: ["a fresh spring garden just starting to bloom",
+        "a light rain-washed street with new green leaves"],
+    4: ["a blooming orchard in full spring color",
+        "a pastel spring market street"],
+    5: ["a sunlit spring rooftop with fresh flowers",
+        "a breezy garden party setting"],
+    6: ["a bright beach or poolside scene at high summer",
+        "a golden late-afternoon summer picnic"],
+    7: ["a vivid summer festival or street-fair energy",
+        "a sun-drenched summer road trip stop"],
+    8: ["a warm late-summer harvest field",
+        "a sun-faded end-of-summer beach evening"],
+    9: ["a cozy back-to-routine autumn coffee-shop moment",
+        "a warm-toned early-autumn park with turning leaves"],
+    10: ["a pumpkin-lit, tastefully spooky autumn evening (no gore, just mood)",
+         "a foggy autumn orchard at dusk"],
+    11: ["a warm-toned gathering around a harvest table",
+         "a cozy indoor scene with autumn leaves and soft lamps"],
+    12: ["a cozy winter-holiday living room lit with warm string lights",
+         "a snowy evening street glowing with warm shop windows"],
+}
+SEASONAL_CHANCE = 0.25  # how often an in-season setting wins over the regular pool
+
+
+def get_seasonal_settings() -> list:
+    month = datetime.now(timezone.utc).month
+    return SEASONAL_POOL.get(month, [])
+
 
 SETTING_POOL = [
     "a rain-soaked neon-lit city street at night",
@@ -796,16 +893,23 @@ def choose_unique_ingredients(state: dict):
     # will almost always find a fresh combination immediately.
     for _ in range(100):
         subject = random.choice(SUBJECT_POOL)
-        medium = weighted_choice(MEDIUM_POOL, last_used)
+        medium_bucket = STYLIZED_MEDIUM_POOL if random.random() < MEDIUM_STYLE_BIAS else REALISTIC_MEDIUM_POOL
+        medium = weighted_choice(medium_bucket, last_used)
         fusion_medium = ""
         if random.random() < FUSION_CHANCE:
             candidates = [m for m in MEDIUM_POOL if m != medium]
             fusion_medium = weighted_choice(candidates, last_used)
 
+        seasonal_options = get_seasonal_settings()
+        if seasonal_options and random.random() < SEASONAL_CHANCE:
+            setting_value = weighted_choice(seasonal_options, last_used)
+        else:
+            setting_value = weighted_choice(SETTING_POOL, last_used)
+
         values = {
             "medium": medium,
             "mood": weighted_choice(MOOD_POOL, last_used),
-            "setting": weighted_choice(SETTING_POOL, last_used),
+            "setting": setting_value,
             "twist": weighted_choice(TWIST_POOL, last_used),
             "camera": weighted_choice(CAMERA_POOL, last_used),
             "subject": subject["label"],
@@ -920,11 +1024,17 @@ def call_openrouter(
     messages: list,
     max_tokens: int = 2000,
     validator=None,
+    max_models_to_try: int = 6,
 ) -> str:
 
     last_error = None
 
-    for model_id in free_models:
+    candidate_pool = free_models[:max_models_to_try * 2] or free_models
+    models_to_try = random.sample(
+        candidate_pool, min(max_models_to_try, len(candidate_pool))
+    )
+
+    for model_id in models_to_try:
         try:
             response = requests.post(
                 f"{OPENROUTER_API}/chat/completions",
@@ -1129,7 +1239,8 @@ Do not simply list the ingredients. Turn them into one coherent visual idea.
 CAPTION RULES:
 The caption must:
 - be 1 or 2 sentences
-- sound casual and human
+- sound casual and human — like a real person typed it fast on their
+  phone, not like polished ad copy
 - contain 1 to 3 emojis
 - naturally mention the recommended AI tool
 - never use I, we, my, our, or us
@@ -1137,6 +1248,15 @@ The caption must:
 - never include a URL
 - never use an em dash
 - never use a double hyphen
+- AVOID these AI-writing tells: overly literary/poetic phrasing (e.g.
+  "just enough to feel like", "a quiet little dream", "there's something
+  about"), semicolon-style clause-stacking, perfectly balanced sentence
+  structure, and generic hype adjectives (stunning, breathtaking,
+  incredible, mesmerizing). Real people write shorter, blunter, slightly
+  messy reactions.
+- prefer plain, punchy, slightly imperfect phrasing and contractions
+  (e.g. "this one's kinda unreal", "not gonna lie this slaps", "obsessed
+  with how this turned out") over descriptive scene-painting
 - end with 2 to 4 relevant, high-traffic discovery hashtags (e.g. a mix
   of broad ones like #AIart #AIphotography #AIgenerated and one tied to
   the specific AI tool named in APP, like #GPTImage2 or #Midjourney) —
@@ -1270,6 +1390,10 @@ APPROVE only if ALL requirements pass.
 21. Caption has no em dash and no double hyphen.
 21b. Caption ends with 2 to 4 relevant discovery hashtags (space
      separated) — REVISE if hashtags are missing.
+21c. Caption does NOT sound AI-generated: no overly literary/poetic
+     phrasing, no semicolon clause-stacking, no generic hype adjectives
+     (stunning, breathtaking, incredible, mesmerizing) — REVISE if it
+     reads like polished ad copy instead of a real person's quick post.
 22. WOW-FACTOR: score how scroll-stopping, share-worthy and visually
     exciting the resulting image would be, from 1 (bland/forgettable,
     technically fine but nobody would stop scrolling) to 10 (genuinely
@@ -1626,12 +1750,10 @@ def main():
     prompt_html = escape_html(prompt_text)
 
     paste_url = create_paste_link(prompt_text)
-    # IMPORTANT: the link is deliberately kept OUT of the main caption.
-    # X/Twitter (and most platforms) algorithmically suppress reach for
-    # posts containing an outbound link — keeping the main post link-free
-    # and posting the link as the first reply/comment instead preserves
-    # reach while still making the full prompt available.
-    social_caption_raw = caption_raw
+    if paste_url:
+        social_caption_raw = f"{caption_raw}\n\nFull prompt link: {paste_url}"
+    else:
+        social_caption_raw = caption_raw
     caption_html_raw = escape_html(social_caption_raw)
 
     # Image caption stays short.
@@ -1688,16 +1810,6 @@ def main():
         f"<code>{caption_html_raw}</code>"
     )
 
-    if paste_url:
-        reply_link_message = (
-            f"#Prompt{prompt_id:04d} — post this link as the FIRST REPLY/COMMENT "
-            f"on X, not inside the main post (links inside the main post get "
-            f"suppressed by the algorithm and hurt reach):\n\n"
-            f"Full prompt: {escape_html(paste_url)}"
-        )
-    else:
-        reply_link_message = None
-
     # --------------------------------------------------------
     # TELEGRAM DELIVERY
     # --------------------------------------------------------
@@ -1721,13 +1833,6 @@ def main():
             tg_chat,
             social_message,
         )
-
-        if reply_link_message:
-            telegram_send_message(
-                tg_token,
-                tg_chat,
-                reply_link_message,
-            )
 
     except Exception as exc:
         print(
