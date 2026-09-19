@@ -1450,23 +1450,29 @@ def main():
 
     # Guard against double-posting: if the native GitHub schedule and the
     # external cron-job.org backup trigger both fire in the same hour,
-    # only the first one should actually post.
-    MIN_MINUTES_BETWEEN_POSTS = 50
-    recent_list = state.get("recent", [])
-    if recent_list:
-        last_posted_at = recent_list[-1].get("posted_at")
-        if last_posted_at:
-            try:
-                last_dt = datetime.fromisoformat(last_posted_at)
-                minutes_since = (datetime.now(timezone.utc) - last_dt).total_seconds() / 60
-                if minutes_since < MIN_MINUTES_BETWEEN_POSTS:
-                    print(
-                        f"Last post was only {minutes_since:.1f} minutes ago "
-                        f"(< {MIN_MINUTES_BETWEEN_POSTS} min) — skipping to avoid a duplicate post."
-                    )
-                    return
-            except ValueError:
-                pass
+    # only the first one should actually post. A manual "Run workflow"
+    # click (workflow_dispatch) is always exempt, so testing/updating
+    # never has to wait out this cooldown.
+    trigger_event = os.environ.get("GITHUB_EVENT_NAME", "")
+    if trigger_event == "workflow_dispatch":
+        print("Manually triggered (workflow_dispatch) — skipping the duplicate-post cooldown check.")
+    else:
+        MIN_MINUTES_BETWEEN_POSTS = 50
+        recent_list = state.get("recent", [])
+        if recent_list:
+            last_posted_at = recent_list[-1].get("posted_at")
+            if last_posted_at:
+                try:
+                    last_dt = datetime.fromisoformat(last_posted_at)
+                    minutes_since = (datetime.now(timezone.utc) - last_dt).total_seconds() / 60
+                    if minutes_since < MIN_MINUTES_BETWEEN_POSTS:
+                        print(
+                            f"Last post was only {minutes_since:.1f} minutes ago "
+                            f"(< {MIN_MINUTES_BETWEEN_POSTS} min) — skipping to avoid a duplicate post."
+                        )
+                        return
+                except ValueError:
+                    pass
 
     recent_summaries = [
         item.get("summary", "")
