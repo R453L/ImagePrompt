@@ -746,12 +746,16 @@ def fingerprint_components(
     prop: str,
     action: str,
     wardrobe: str,
+    fusion_medium: str = "",
 ) -> str:
     raw = "||".join([
         medium, mood, setting, twist, camera, subject,
-        color, texture, prop, action, wardrobe
+        color, texture, prop, action, wardrobe, fusion_medium
     ])
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+FUSION_CHANCE = 0.4  # how often two mediums get forcibly fused into one hybrid style
 
 
 def choose_unique_ingredients(state: dict):
@@ -761,9 +765,14 @@ def choose_unique_ingredients(state: dict):
     # will almost always find a fresh combination immediately.
     for _ in range(100):
         subject = random.choice(SUBJECT_POOL)
+        medium = random.choice(MEDIUM_POOL)
+        fusion_medium = ""
+        if random.random() < FUSION_CHANCE:
+            candidates = [m for m in MEDIUM_POOL if m != medium]
+            fusion_medium = random.choice(candidates)
 
         values = {
-            "medium": random.choice(MEDIUM_POOL),
+            "medium": medium,
             "mood": random.choice(MOOD_POOL),
             "setting": random.choice(SETTING_POOL),
             "twist": random.choice(TWIST_POOL),
@@ -774,6 +783,7 @@ def choose_unique_ingredients(state: dict):
             "prop": random.choice(PROP_POOL),
             "action": random.choice(ACTION_POOL),
             "wardrobe": random.choice(WARDROBE_POOL),
+            "fusion_medium": fusion_medium,
         }
 
         signature = fingerprint_components(**values)
@@ -794,6 +804,7 @@ def choose_unique_ingredients(state: dict):
         "prop": random.choice(PROP_POOL),
         "action": random.choice(ACTION_POOL),
         "wardrobe": random.choice(WARDROBE_POOL),
+        "fusion_medium": "",
     }
     signature = fingerprint_components(**values)
     return values, next(
@@ -954,6 +965,23 @@ def build_generation_messages(
         if recent_summaries else "(none yet)"
     )
 
+    fusion_medium = ingredients.get("fusion_medium", "")
+    if fusion_medium:
+        fusion_block = f"""
+STYLE-FUSION REQUIREMENT (mandatory for this generation):
+You have been given TWO medium/technique sparks instead of one:
+  MEDIUM A: {ingredients["medium"]}
+  MEDIUM B: {fusion_medium}
+Do NOT just pick one or alternate between them. Genuinely FUSE them into
+ONE coherent hybrid visual technique that could not be described by
+either alone — invent how they combine (e.g. how a photographic base
+interacts with an illustrated/textural layer, or how one technique's
+characteristic marks/materials appear inside the other's structure).
+This fused hybrid is the primary "medium" for this prompt.
+"""
+    else:
+        fusion_block = ""
+
     system = f"""
 You are an elite commercial AI-image prompt creative director.
 
@@ -1005,7 +1033,7 @@ naturally. Add specific grounded details. Avoid generic "epic", "magical",
 
 MEDIUM:
 {ingredients["medium"]}
-
+{fusion_block}
 MOOD:
 {ingredients["mood"]}
 
@@ -1495,6 +1523,7 @@ def main():
         print(
             f"\nAttempt {attempt}\n"
             f"  medium: {ingredients['medium']}\n"
+            f"  fusion_medium: {ingredients.get('fusion_medium') or '(none)'}\n"
             f"  mood: {ingredients['mood']}\n"
             f"  setting: {ingredients['setting']}\n"
             f"  twist: {ingredients['twist']}\n"
@@ -1714,6 +1743,7 @@ def main():
         "signature": approved_signature,
         "ingredients": {
             "medium": approved_ingredients["medium"],
+            "fusion_medium": approved_ingredients.get("fusion_medium", ""),
             "mood": approved_ingredients["mood"],
             "setting": approved_ingredients["setting"],
             "twist": approved_ingredients["twist"],
