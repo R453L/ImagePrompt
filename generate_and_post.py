@@ -734,6 +734,36 @@ def next_id(state: dict) -> int:
     return int(state.get("last_id", 0)) + 1
 
 
+INGREDIENT_COOLDOWN_DAYS = 120  # how long an ingredient value stays de-prioritized
+INGREDIENT_MIN_WEIGHT = 0.15    # never fully blocked — evergreen concepts can resurface
+
+
+def weighted_choice(pool: list, last_used: dict):
+    """Pick from `pool` with recently-used items temporarily de-prioritized
+    (not removed) — weight recovers linearly back to 1.0 over
+    INGREDIENT_COOLDOWN_DAYS, so a concept can resurface months later
+    with a fresh angle instead of being permanently retired."""
+    now = datetime.now(timezone.utc)
+    weights = []
+    for item in pool:
+        last_iso = last_used.get(item)
+        if not last_iso:
+            weights.append(1.0)
+            continue
+        try:
+            last_dt = datetime.fromisoformat(last_iso)
+        except ValueError:
+            weights.append(1.0)
+            continue
+        days_ago = (now - last_dt).total_seconds() / 86400
+        if days_ago >= INGREDIENT_COOLDOWN_DAYS:
+            weights.append(1.0)
+        else:
+            fraction = days_ago / INGREDIENT_COOLDOWN_DAYS
+            weights.append(INGREDIENT_MIN_WEIGHT + (1.0 - INGREDIENT_MIN_WEIGHT) * fraction)
+    return random.choices(pool, weights=weights, k=1)[0]
+
+
 def fingerprint_components(
     medium: str,
     mood: str,
@@ -755,34 +785,35 @@ def fingerprint_components(
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
-FUSION_CHANCE = 0.25  # how often two mediums get forcibly fused into one hybrid style
+FUSION_CHANCE = 0.4  # how often two mediums get forcibly fused into one hybrid style
 
 
 def choose_unique_ingredients(state: dict):
     used = set(state.get("used_signatures", []))
+    last_used = state.get("ingredient_last_used", {})
 
     # Try many random combinations. With the current library sizes this
     # will almost always find a fresh combination immediately.
     for _ in range(100):
         subject = random.choice(SUBJECT_POOL)
-        medium = random.choice(MEDIUM_POOL)
+        medium = weighted_choice(MEDIUM_POOL, last_used)
         fusion_medium = ""
         if random.random() < FUSION_CHANCE:
             candidates = [m for m in MEDIUM_POOL if m != medium]
-            fusion_medium = random.choice(candidates)
+            fusion_medium = weighted_choice(candidates, last_used)
 
         values = {
             "medium": medium,
-            "mood": random.choice(MOOD_POOL),
-            "setting": random.choice(SETTING_POOL),
-            "twist": random.choice(TWIST_POOL),
-            "camera": random.choice(CAMERA_POOL),
+            "mood": weighted_choice(MOOD_POOL, last_used),
+            "setting": weighted_choice(SETTING_POOL, last_used),
+            "twist": weighted_choice(TWIST_POOL, last_used),
+            "camera": weighted_choice(CAMERA_POOL, last_used),
             "subject": subject["label"],
-            "color": random.choice(COLOR_STORIES),
-            "texture": random.choice(TEXTURE_POOL),
-            "prop": random.choice(PROP_POOL),
-            "action": random.choice(ACTION_POOL),
-            "wardrobe": random.choice(WARDROBE_POOL),
+            "color": weighted_choice(COLOR_STORIES, last_used),
+            "texture": weighted_choice(TEXTURE_POOL, last_used),
+            "prop": weighted_choice(PROP_POOL, last_used),
+            "action": weighted_choice(ACTION_POOL, last_used),
+            "wardrobe": weighted_choice(WARDROBE_POOL, last_used),
             "fusion_medium": fusion_medium,
         }
 
@@ -1182,7 +1213,7 @@ def parse_delimited(text: str, markers: list) -> dict:
 # STAGE 2 REVIEW
 # ============================================================
 
-REVIEW_MARKERS = ["VERDICT", "REASON"]
+REVIEW_MARKERS = ["VERDICT", "WOW_SCORE", "REASON"]
 
 
 def build_review_messages(
@@ -1233,6 +1264,14 @@ APPROVE only if ALL requirements pass.
 19. Caption does not contain "full prompt".
 20. Caption has no URL.
 21. Caption has no em dash and no double hyphen.
+22. WOW-FACTOR: score how scroll-stopping, share-worthy and visually
+    exciting the resulting image would be, from 1 (bland/forgettable,
+    technically fine but nobody would stop scrolling) to 10 (genuinely
+    exciting, distinctive, the kind of result people screenshot and
+    share). A technically correct but safe/generic prompt should score
+    low here even if it passes every other rule. APPROVE requires a
+    wow-factor of 7 or higher — REVISE if it scores 6 or below, and say
+    why in the reason.
 
 REQUIRED SETTING:
 {ingredients["setting"]}
@@ -1263,6 +1302,9 @@ Return ONLY:
 ===VERDICT===
 APPROVE or REVISE
 
+===WOW_SCORE===
+a single number from 1 to 10
+
 ===REASON===
 one short sentence
 """
@@ -1277,120 +1319,31 @@ one short sentence
 # IMAGE SOURCES
 # ============================================================
 
-def fetch_from_pexels(api_key: str, query: str):
-    response = requests.get(
-        "https://api.pexels.com/v1/search",
-        headers={"Authorization": api_key},
-        params={
-            "query": query,
-            "per_page": 15,
-            "orientation": "portrait",
-        },
-        timeout=REQUEST_TIMEOUT,
-    )
-
-    response.raise_for_status()
-
-    photos = response.json().get("photos", [])
-
-    if not photos:
-        raise RuntimeError("Pexels returned no results.")
-
-    photo = random.choice(photos[:min(8, len(photos))])
-    image_url = photo["src"]["large"]
-
-    image = requests.get(image_url, timeout=REQUEST_TIMEOUT)
-    image.raise_for_status()
-
-    return image.content, "Pexels"
+REFERENCE_PHOTO_DIR = "reference_photos"
 
 
-def fetch_from_pixabay(api_key: str, query: str):
-    def _search(editors_choice: bool):
-        params = {
-            "key": api_key,
-            "q": query,
-            "image_type": "photo",
-            "orientation": "vertical",
-            "category": "people",
-            "per_page": 20,
-            "order": "popular",
-        }
-        if editors_choice:
-            params["editors_choice"] = "true"
-        response = requests.get("https://pixabay.com/api/", params=params, timeout=REQUEST_TIMEOUT)
-        response.raise_for_status()
-        return response.json().get("hits", [])
+def fetch_base_image(queries: list = None):
+    """Pick a random reference photo of Tiyashi from the local repo folder.
+    `queries` is accepted (and ignored) for backward compatibility with
+    the previous stock-photo-API call sites — with a single consistent
+    persona, the AI image app infers pose/angle context on its own, so
+    no keyword search is needed."""
+    if not os.path.isdir(REFERENCE_PHOTO_DIR):
+        raise RuntimeError(
+            f"Reference photo folder '{REFERENCE_PHOTO_DIR}' not found in the repo."
+        )
 
-    hits = _search(editors_choice=True)
-    if not hits:
-        hits = _search(editors_choice=False)
-
-    if not hits:
-        raise RuntimeError("Pixabay returned no results.")
-
-    hit = random.choice(hits[:min(8, len(hits))])
-    image_url = hit["largeImageURL"]
-
-    image = requests.get(image_url, timeout=REQUEST_TIMEOUT)
-    image.raise_for_status()
-
-    return image.content, "Pixabay"
-
-
-def fetch_from_unsplash(api_key: str, query: str):
-    response = requests.get(
-        "https://api.unsplash.com/search/photos",
-        headers={"Authorization": f"Client-ID {api_key}"},
-        params={
-            "query": query,
-            "per_page": 20,
-            "orientation": "portrait",
-            "order_by": "relevant",
-        },
-        timeout=REQUEST_TIMEOUT,
-    )
-
-    response.raise_for_status()
-
-    results = response.json().get("results", [])
-
-    if not results:
-        raise RuntimeError("Unsplash returned no results.")
-
-    result = random.choice(results[:min(8, len(results))])
-    image_url = result["urls"]["regular"]
-
-    image = requests.get(image_url, timeout=REQUEST_TIMEOUT)
-    image.raise_for_status()
-
-    return image.content, "Unsplash"
-
-
-def fetch_base_image(
-    pexels_key: str,
-    pixabay_key: str,
-    unsplash_key: str,
-    queries: list,
-):
-    query = random.choice(queries)
-
-    sources = [
-        (fetch_from_pexels, pexels_key),
-        (fetch_from_pixabay, pixabay_key),
-        (fetch_from_unsplash, unsplash_key),
+    photos = [
+        f for f in os.listdir(REFERENCE_PHOTO_DIR)
+        if f.lower().endswith((".jpg", ".jpeg", ".png"))
     ]
+    if not photos:
+        raise RuntimeError(f"No reference photos found in '{REFERENCE_PHOTO_DIR}'.")
 
-    for function, key in sources:
-        try:
-            return function(key, query)
-        except Exception as exc:
-            print(
-                f"Image source failed: {function.__name__}, "
-                f"query={query!r}, error={exc}"
-            )
-
-    raise RuntimeError("All base-image sources failed.")
+    chosen = random.choice(photos)
+    path = os.path.join(REFERENCE_PHOTO_DIR, chosen)
+    with open(path, "rb") as f:
+        return f.read(), f"Tiyashi ({chosen})"
 
 
 # ============================================================
@@ -1481,11 +1434,30 @@ def main():
 
     openrouter_key = env("OPENROUTER_API_KEY")
 
-    pexels_key = env("PEXELS_API_KEY")
-    pixabay_key = env("PIXABAY_API_KEY")
-    unsplash_key = env("UNSPLASH_ACCESS_KEY")
+    # Stock-photo APIs (Pexels/Pixabay/Unsplash) are no longer used —
+    # base images now come from the local Tiyashi reference photo set.
 
     state = load_state()
+
+    # Guard against double-posting: if the native GitHub schedule and the
+    # external cron-job.org backup trigger both fire in the same hour,
+    # only the first one should actually post.
+    MIN_MINUTES_BETWEEN_POSTS = 50
+    recent_list = state.get("recent", [])
+    if recent_list:
+        last_posted_at = recent_list[-1].get("posted_at")
+        if last_posted_at:
+            try:
+                last_dt = datetime.fromisoformat(last_posted_at)
+                minutes_since = (datetime.now(timezone.utc) - last_dt).total_seconds() / 60
+                if minutes_since < MIN_MINUTES_BETWEEN_POSTS:
+                    print(
+                        f"Last post was only {minutes_since:.1f} minutes ago "
+                        f"(< {MIN_MINUTES_BETWEEN_POSTS} min) — skipping to avoid a duplicate post."
+                    )
+                    return
+            except ValueError:
+                pass
 
     recent_summaries = [
         item.get("summary", "")
@@ -1570,13 +1542,23 @@ def main():
             continue
 
         verdict = review.get("verdict", "").strip().upper()
+        try:
+            wow_score = int(re.search(r"\d+", review.get("wow_score", "0")).group())
+        except (AttributeError, ValueError):
+            wow_score = 0
 
-        if verdict.startswith("APPROVE"):
+        print(f"Verdict: {verdict} | wow_score: {wow_score}")
+
+        if verdict.startswith("APPROVE") and wow_score >= 7:
             approved = candidate
             approved_subject = subject
             approved_signature = signature
             approved_ingredients = ingredients
             break
+
+        if verdict.startswith("APPROVE") and wow_score < 7:
+            print(f"Reviewer approved but wow_score too low ({wow_score}/10) — treating as REVISE.")
+            continue
 
         print(
             f"Rejected by reviewer: "
@@ -1595,12 +1577,7 @@ def main():
     # --------------------------------------------------------
 
     try:
-        image_bytes, image_source = fetch_base_image(
-            pexels_key,
-            pixabay_key,
-            unsplash_key,
-            approved_subject["queries"],
-        )
+        image_bytes, image_source = fetch_base_image()
     except Exception as exc:
         print(
             f"::error::Could not fetch base image. "
@@ -1755,6 +1732,18 @@ def main():
 
     state["recent"] = recent[-RECENT_KEEP:]
     state["last_id"] = prompt_id
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+    ingredient_last_used = state.get("ingredient_last_used", {})
+    for key in ("medium", "mood", "setting", "twist", "camera",
+                "color", "texture", "prop", "action", "wardrobe"):
+        value = approved_ingredients.get(key)
+        if value:
+            ingredient_last_used[value] = now_iso
+    fusion_value = approved_ingredients.get("fusion_medium")
+    if fusion_value:
+        ingredient_last_used[fusion_value] = now_iso
+    state["ingredient_last_used"] = ingredient_last_used
 
     save_state(state)
 
