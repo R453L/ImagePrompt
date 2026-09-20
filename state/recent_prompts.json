@@ -1,11 +1,6 @@
 {
   "recent": [
     {
-      "id": 37,
-      "summary": "[Aerial editorial rooftop] Rooftop serenity with a faithful companion",
-      "posted_at": "2026-09-18T09:39:06.121184+00:00"
-    },
-    {
       "id": 38,
       "summary": "[Surreal cinematic subway doppelgänger] Midnight platform doppelgänger moment",
       "posted_at": "2026-09-18T14:28:43.395533+00:00"
@@ -438,37 +433,54 @@
         "subject": "a person walking through the environment"
       },
       "image_source": "Tiyashi (F18C5055-F153-48A7-AD45-0233BBC6996D.png)"
+    },
+    {
+      "id": 67,
+      "summary": "[travel-diary postcard collage] Museum exhibit of a giant spoon in misty peaks",
+      "posted_at": "2026-09-20T15:04:20.471586+00:00",
+      "signature": "df628044ee46456ad729ea6e5cbba21950dd6310781ace2c4ee1bf269580a730",
+      "ingredients": {
+        "medium": "travel-diary postcard collage with stamps, ticket stubs, and handwritten captions",
+        "fusion_medium": "",
+        "mood": "wistful and longing",
+        "setting": "floating limestone pillar peaks shrouded in mist",
+        "twist": "an ordinary object is framed like a museum artifact",
+        "camera": "slightly elevated three-quarter angle",
+        "subject": "a person in an everyday candid activity"
+      },
+      "image_source": "Tiyashi (40E32AB5-1614-4FBB-90B7-1D1371F502CA.png)"
     }
   ],
-  "last_id": 66,
+  "last_id": 67,
   "used_signatures": [
-    "20802162500d3accbf6a0632e89a01190dd2d6d94e87eddc97ac475fe23193d0",
-    "290ec8e20950a77a110fff3f54c4e71b3811c55313266e0b9857406c55c5b56f",
+    "bba4e26e6227a1f4a6159f42525a1bedd5b224dbed4226b8f958d85c0b1f5351",
+    "73ecde93ef6b2ffc34da96590fe19e8792c7c5952e04df9e30767339faadaaeb",
+    "cd8b7151ed9213c61a7f6ee1766eea1ef2ef6f40825c16bd1d23c63583b5654b",
+    "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
+    "fb247363d3f3465ddb39bac1a0734c20a636e289772eeccfb441892b47e18d43",
+    "c313dfd0eaf952af64ca1dd01d676435ec020f54cea208173c94c0be664b35ae",
+    "7cd8fb89c3ea8494c712417d5dea2663bea3cb1f5cc38da4616d36d7540bfccd",
+    "cd58f0a13172137727f96ffc7e9739472a93c7e5cea5d31b57c0a5d85aaf1173",
+    "77f58ae120ad75af7d08cdcc5acfa3030f601bc1d5950baa5d330dd5bbcdda96",
+    "98da2b0ac388de0f06aca6ca4b3b965a419255cc90bab55d90a5bc209f2bb1a2",
+    "bbc42289325f136f888bfe54fa10c238ab541d25ff75925f581395584f367bc4",
+    "7da9e82cbc4d2915ce07db2d34db149cfd95fef69ea9b078a044f9adc8be1d20",
+    "1a12bf72a521b9689c983b23e7fb3a72cc5f1bef30e3001dc6ed7e7f3752d7ba",
+    "5d014c920767e8f87cf5c785720229ef3e462e4ab6b2759738fe14d7164c3c23",
     "d24b3d778b372ba89ce786cd7dd7fcbc13bcd13fed0d7cbc2acb93b40c06de5c",
-    "e487881aae5a8955c54fbeabf8d847b3530a7ed65954d58639ccbb45b458e028",
     "ba21d4c9e63be1b2950c4bdcc274fa76e019402ccca7ad8283c2818954bd1cf6",
     "6b20997b8ede17afd15c97576ff7a46ef30ca3f7932d78439cd3e7778482ed2b",
-    "bba4e26e6227a1f4a6159f42525a1bedd5b224dbed4226b8f958d85c0b1f5351",
-    "4374b1695926784fc0b8f8ee0f885b70694eaf19f37c224884d40823fbba161d",
-    "7da9e82cbc4d2915ce07db2d34db149cfd95fef69ea9b078a044f9adc8be1d20",
-    "7cd8fb89c3ea8494c712417d5dea2663bea3cb1f5cc38da4616d36d7540bfccd",
-    "98da2b0ac388de0f06aca6ca4b3b965a419255cc90bab55d90a5bc209f2bb1a2",
-    "cd58f0a13172137727f96ffc7e9739472a93c7e5cea5d31b57c0a5d85aaf1173",
-    "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
-    "77f58ae120ad75af7d08cdcc5acfa3030f601bc1d5950baa5d330dd5bbcdda96",
-    "815bd9677675c2de17f10b785eaa8022197ad27a646041d6c2dd6226e28afa67",
-    "bbc42289325f136f888bfe54fa10c238ab541d25ff75925f581395584f367bc4",
-    "1a12bf72a521b9689c983b23e7fb3a72cc5f1bef30e3001dc6ed7e7f3752d7ba",
-    "c313dfd0eaf952af64ca1dd01d676435ec020f54cea208173c94c0be664b35ae",
-    "811b2d63d680f6bc1682d607057241111b8d9e5a932073c85b7bc2957c76fb1d",
-    "cd8b7151ed9213c61a7f6ee1766eea1ef2ef6f40825c16bd1d23c63583b5654b",
+    "e487881aae5a8955c54fbeabf8d847b3530a7ed65954d58639ccbb45b458e028",
+    "290ec8e20950a77a110fff3f54c4e71b3811c55313266e0b9857406c55c5b56f",
     "af9991d4ababe070a8273b50aefeeac5f1744708214003a88f5d2dfa2c70d9ea",
-    "9a8274528068ed5e9d3dca765de2f6d3460f9af7c1c6a79e9d4fb78a4b6fb8d4",
-    "73ecde93ef6b2ffc34da96590fe19e8792c7c5952e04df9e30767339faadaaeb",
-    "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
-    "5d014c920767e8f87cf5c785720229ef3e462e4ab6b2759738fe14d7164c3c23",
     "a317e09d680a182ec74926b75221c6d36df5da3ae9b0b5049b14efc743c7e569",
-    "fb247363d3f3465ddb39bac1a0734c20a636e289772eeccfb441892b47e18d43"
+    "9a8274528068ed5e9d3dca765de2f6d3460f9af7c1c6a79e9d4fb78a4b6fb8d4",
+    "811b2d63d680f6bc1682d607057241111b8d9e5a932073c85b7bc2957c76fb1d",
+    "df628044ee46456ad729ea6e5cbba21950dd6310781ace2c4ee1bf269580a730",
+    "815bd9677675c2de17f10b785eaa8022197ad27a646041d6c2dd6226e28afa67",
+    "4374b1695926784fc0b8f8ee0f885b70694eaf19f37c224884d40823fbba161d",
+    "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
+    "20802162500d3accbf6a0632e89a01190dd2d6d94e87eddc97ac475fe23193d0"
   ],
   "ingredient_last_used": {
     "fine-art portrait photography": "2026-09-19T13:02:04.103105+00:00",
@@ -515,7 +527,7 @@
     "a warm-toned early-autumn park with turning leaves": "2026-09-19T20:32:17.013476+00:00",
     "a practical lamp casts an unusually specific geometric shadow": "2026-09-19T20:32:17.013476+00:00",
     "subtle dutch angle for visual tension": "2026-09-19T20:32:17.013476+00:00",
-    "forest green, clay, parchment and charcoal": "2026-09-19T20:32:17.013476+00:00",
+    "forest green, clay, parchment and charcoal": "2026-09-20T15:04:20.471605+00:00",
     "corrugated cardboard": "2026-09-19T20:32:17.013476+00:00",
     "a hand mirror": "2026-09-19T20:32:17.013476+00:00",
     "repairing something small": "2026-09-19T20:32:17.013476+00:00",
@@ -622,6 +634,15 @@
     "wide-angle low-angle perspective": "2026-09-20T14:01:23.990994+00:00",
     "a thermos flask": "2026-09-20T14:01:23.990994+00:00",
     "checking a handwritten note": "2026-09-20T14:01:23.990994+00:00",
-    "a clean contemporary neutral outfit chosen to complement the environment": "2026-09-20T14:01:23.990994+00:00"
+    "a clean contemporary neutral outfit chosen to complement the environment": "2026-09-20T14:01:23.990994+00:00",
+    "travel-diary postcard collage with stamps, ticket stubs, and handwritten captions": "2026-09-20T15:04:20.471605+00:00",
+    "wistful and longing": "2026-09-20T15:04:20.471605+00:00",
+    "floating limestone pillar peaks shrouded in mist": "2026-09-20T15:04:20.471605+00:00",
+    "an ordinary object is framed like a museum artifact": "2026-09-20T15:04:20.471605+00:00",
+    "slightly elevated three-quarter angle": "2026-09-20T15:04:20.471605+00:00",
+    "subtle halation": "2026-09-20T15:04:20.471605+00:00",
+    "an oversized everyday object scaled for a miniature-world scene (giant spoon, giant book, giant flower)": "2026-09-20T15:04:20.471605+00:00",
+    "looking through a window": "2026-09-20T15:04:20.471605+00:00",
+    "casual workwear with realistic fabric creases": "2026-09-20T15:04:20.471605+00:00"
   }
 }
