@@ -49,7 +49,7 @@ USED_SIGNATURE_KEEP = 100_000
 # Recent human-readable concepts sent to the model for semantic avoidance.
 RECENT_KEEP = 30
 
-MAX_ATTEMPTS = 5
+MAX_ATTEMPTS = 10
 REQUEST_TIMEOUT = 60
 
 TELEGRAM_MAX_MESSAGE_LEN = 4096
@@ -454,6 +454,22 @@ SETTING_POOL = [
     "a weathered wooden pier",
     "a quiet coastal promenade",
     "a small mountain guesthouse lobby",
+    "a vast salt-flat mirror reflecting the entire sky",
+    "a glowing bioluminescent shoreline at night",
+    "an endless lavender field stretching to the horizon",
+    "a narrow red-rock slot canyon with beams of light cutting through",
+    "a symmetrical alpine lake perfectly mirroring the mountains",
+    "a rolling sea of desert dunes at golden hour",
+    "a glowing ice-cave interior with blue light filtering through",
+    "a cliffside infinity pool overlooking the ocean",
+    "a colorful hillside town of stacked pastel houses",
+    "a dense bamboo forest with light filtering through the stalks",
+    "a floating lantern festival reflected on still water",
+    "a underground crystal cavern glittering with mineral formations",
+    "a terraced hillside of vividly colored tulip fields",
+    "a vast canyon overlook at sunrise with layered rock strata",
+    "a turquoise glacial river winding through a valley",
+    "a fog-covered pine forest at first light",
 ]
 
 TWIST_POOL = [
