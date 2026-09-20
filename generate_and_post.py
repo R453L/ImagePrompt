@@ -72,6 +72,18 @@ HARD_RULE = (
     "person must remain unmistakably the exact same person."
 )
 
+CLARITY_RULE = (
+    "NON-NEGOTIABLE CLARITY RULE: no matter what medium, filter, grain, "
+    "texture overlay, or artistic treatment is used, the person's face "
+    "and clothing must stay crisp, sharp and clearly legible — never "
+    "hazy, muddy, washed-out, or obscured by an effect applied across "
+    "the whole frame. If a stylized medium is used (paint, ink, grain, "
+    "texture, collage, etc.), confine the heaviest stylization to the "
+    "background/borders/secondary elements, or use a clean split/inset "
+    "composition where the subject's own area stays photographically "
+    "sharp — never let a global wash or filter degrade the face itself."
+)
+
 
 # ============================================================
 # LARGE CREATIVE LIBRARIES
@@ -1206,6 +1218,8 @@ photo together with your prompt.
 
 {HARD_RULE}
 
+{CLARITY_RULE}
+
 ABSOLUTE DEMOGRAPHIC RULE:
 Never infer or specify the reference person's gender, age, ethnicity,
 race, nationality or other demographic identity. Use neutral language such
@@ -1245,6 +1259,24 @@ IMPORTANT CREATIVE DIRECTION:
 The following ingredients are a starting point, not a script. Combine them
 naturally. Add specific grounded details. Avoid generic "epic", "magical",
 "ethereal" filler.
+
+BOLDNESS CALIBRATION — if the medium is a stylized/artistic one (not
+straight photography), it must be executed as a GENUINELY DRAMATIC,
+graphically obvious transformation — the kind that stops a scroll —
+not a subtle grain/color/texture wash layered thinly over what is
+still basically a normal photo. Benchmark examples of the target level
+of boldness: a multi-panel contact-sheet grid of the same person in
+different poses; a composition clearly split down the middle where one
+half is full photorealism and the other half is bold ink-line
+illustration; a magazine-cover-style layout with oversized graphic
+typography and halftone dots; a 3D collectible-figurine-in-packaging
+presentation; a doodle-shadow cast on a wall beside the real person.
+Notice these all keep the real person's area crisp and photographic
+while the "art" happens in a clearly separate zone, panel, or contrast
+layer — that is the technique to reach for (see the clarity rule above).
+If your instinct is to just add film grain and a color wash to an
+otherwise ordinary photo, that is NOT bold enough — push further into
+an actual compositional or medium transformation.
 
 MEDIUM:
 {ingredients["medium"]}
@@ -1312,6 +1344,9 @@ Do not simply list the ingredients. Turn them into one coherent visual idea.
 
 CAPTION RULES:
 The caption must:
+- always start with a capital letter (even in a casual style, the
+  first letter of the sentence is capitalized — casual tone does not
+  mean lowercase-only texting style)
 - be 1 or 2 sentences
 - sound casual and human — like a real person typed it fast on their
   phone, not like polished ad copy
@@ -1433,6 +1468,16 @@ Review the candidate strictly.
 APPROVE only if ALL requirements pass.
 
 1. The image prompt contains an explicit, strong face/identity lock.
+1b. The prompt explicitly ensures the face and clothing stay sharp,
+    clear and legible even with the chosen medium/effect — REVISE if a
+    global filter, grain, texture wash, or paint effect would visibly
+    degrade/obscure the face or clothing across the whole frame.
+1c. If the medium is stylized/artistic (not straight photography), it
+    must read as a genuinely bold, graphically obvious transformation
+    (e.g. a clear split composition, a distinct illustrated panel/layer,
+    an obvious graphic-design layout) — REVISE if it's really just a
+    normal photo with a thin grain/color/texture wash over the whole
+    frame, since that is not bold enough for this audience.
 2. The exact reference person's face must remain preserved.
 3. No gender, age, ethnicity, race, nationality or demographic assumption
    about the reference person appears in the prompt.
@@ -1818,6 +1863,8 @@ def main():
     app_rec = approved.get("app", "").strip()
     theme_used = approved.get("theme_used", "").strip()
     caption_raw = approved.get("caption", "").strip()
+    if caption_raw:
+        caption_raw = caption_raw[0].upper() + caption_raw[1:]
 
     hook_html = escape_html(hook)
     app_html = escape_html(app_rec)
