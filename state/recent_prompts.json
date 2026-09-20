@@ -1,11 +1,6 @@
 {
   "recent": [
     {
-      "id": 38,
-      "summary": "[Surreal cinematic subway doppelgänger] Midnight platform doppelgänger moment",
-      "posted_at": "2026-09-18T14:28:43.395533+00:00"
-    },
-    {
       "id": 39,
       "summary": "[Thermal Charcoal Monastic Sketch] Monastery shadows meet pet companion",
       "posted_at": "2026-09-18T18:22:36.208492+00:00"
@@ -449,38 +444,55 @@
         "subject": "a person in an everyday candid activity"
       },
       "image_source": "Tiyashi (40E32AB5-1614-4FBB-90B7-1D1371F502CA.png)"
+    },
+    {
+      "id": 68,
+      "summary": "[Botanical-engraving-fused-capsule portrait] Caught mid-drawer inside a tube of etched leaves",
+      "posted_at": "2026-09-20T15:59:19.912308+00:00",
+      "signature": "3fd2da014c7f820bad2eb0bb240d0aded43cfd84e4bc418139a95e56e443f24c",
+      "ingredients": {
+        "medium": "botanical engraving aesthetic",
+        "fusion_medium": "cylindrical transparent capsule/container product-ad composition",
+        "mood": "dramatic and cinematic",
+        "setting": "a botanical nursery filled with labeled plants",
+        "twist": "the subject is surrounded by objects arranged according to a subtle geometric rhythm",
+        "camera": "reflection-assisted framing",
+        "subject": "a solo person in a natural candid portrait"
+      },
+      "image_source": "Tiyashi (EFBD40E8-16CC-4A8E-9837-8F6E89660309.png)"
     }
   ],
-  "last_id": 67,
+  "last_id": 68,
   "used_signatures": [
+    "811b2d63d680f6bc1682d607057241111b8d9e5a932073c85b7bc2957c76fb1d",
+    "e487881aae5a8955c54fbeabf8d847b3530a7ed65954d58639ccbb45b458e028",
+    "ba21d4c9e63be1b2950c4bdcc274fa76e019402ccca7ad8283c2818954bd1cf6",
+    "3fd2da014c7f820bad2eb0bb240d0aded43cfd84e4bc418139a95e56e443f24c",
     "bba4e26e6227a1f4a6159f42525a1bedd5b224dbed4226b8f958d85c0b1f5351",
-    "73ecde93ef6b2ffc34da96590fe19e8792c7c5952e04df9e30767339faadaaeb",
-    "cd8b7151ed9213c61a7f6ee1766eea1ef2ef6f40825c16bd1d23c63583b5654b",
-    "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
-    "fb247363d3f3465ddb39bac1a0734c20a636e289772eeccfb441892b47e18d43",
-    "c313dfd0eaf952af64ca1dd01d676435ec020f54cea208173c94c0be664b35ae",
-    "7cd8fb89c3ea8494c712417d5dea2663bea3cb1f5cc38da4616d36d7540bfccd",
-    "cd58f0a13172137727f96ffc7e9739472a93c7e5cea5d31b57c0a5d85aaf1173",
+    "df628044ee46456ad729ea6e5cbba21950dd6310781ace2c4ee1bf269580a730",
+    "d24b3d778b372ba89ce786cd7dd7fcbc13bcd13fed0d7cbc2acb93b40c06de5c",
+    "af9991d4ababe070a8273b50aefeeac5f1744708214003a88f5d2dfa2c70d9ea",
     "77f58ae120ad75af7d08cdcc5acfa3030f601bc1d5950baa5d330dd5bbcdda96",
-    "98da2b0ac388de0f06aca6ca4b3b965a419255cc90bab55d90a5bc209f2bb1a2",
+    "9a8274528068ed5e9d3dca765de2f6d3460f9af7c1c6a79e9d4fb78a4b6fb8d4",
+    "cd58f0a13172137727f96ffc7e9739472a93c7e5cea5d31b57c0a5d85aaf1173",
+    "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
+    "6b20997b8ede17afd15c97576ff7a46ef30ca3f7932d78439cd3e7778482ed2b",
+    "815bd9677675c2de17f10b785eaa8022197ad27a646041d6c2dd6226e28afa67",
+    "c313dfd0eaf952af64ca1dd01d676435ec020f54cea208173c94c0be664b35ae",
+    "fb247363d3f3465ddb39bac1a0734c20a636e289772eeccfb441892b47e18d43",
+    "20802162500d3accbf6a0632e89a01190dd2d6d94e87eddc97ac475fe23193d0",
+    "cd8b7151ed9213c61a7f6ee1766eea1ef2ef6f40825c16bd1d23c63583b5654b",
+    "73ecde93ef6b2ffc34da96590fe19e8792c7c5952e04df9e30767339faadaaeb",
+    "5d014c920767e8f87cf5c785720229ef3e462e4ab6b2759738fe14d7164c3c23",
+    "4374b1695926784fc0b8f8ee0f885b70694eaf19f37c224884d40823fbba161d",
     "bbc42289325f136f888bfe54fa10c238ab541d25ff75925f581395584f367bc4",
+    "7cd8fb89c3ea8494c712417d5dea2663bea3cb1f5cc38da4616d36d7540bfccd",
+    "a317e09d680a182ec74926b75221c6d36df5da3ae9b0b5049b14efc743c7e569",
+    "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
     "7da9e82cbc4d2915ce07db2d34db149cfd95fef69ea9b078a044f9adc8be1d20",
     "1a12bf72a521b9689c983b23e7fb3a72cc5f1bef30e3001dc6ed7e7f3752d7ba",
-    "5d014c920767e8f87cf5c785720229ef3e462e4ab6b2759738fe14d7164c3c23",
-    "d24b3d778b372ba89ce786cd7dd7fcbc13bcd13fed0d7cbc2acb93b40c06de5c",
-    "ba21d4c9e63be1b2950c4bdcc274fa76e019402ccca7ad8283c2818954bd1cf6",
-    "6b20997b8ede17afd15c97576ff7a46ef30ca3f7932d78439cd3e7778482ed2b",
-    "e487881aae5a8955c54fbeabf8d847b3530a7ed65954d58639ccbb45b458e028",
-    "290ec8e20950a77a110fff3f54c4e71b3811c55313266e0b9857406c55c5b56f",
-    "af9991d4ababe070a8273b50aefeeac5f1744708214003a88f5d2dfa2c70d9ea",
-    "a317e09d680a182ec74926b75221c6d36df5da3ae9b0b5049b14efc743c7e569",
-    "9a8274528068ed5e9d3dca765de2f6d3460f9af7c1c6a79e9d4fb78a4b6fb8d4",
-    "811b2d63d680f6bc1682d607057241111b8d9e5a932073c85b7bc2957c76fb1d",
-    "df628044ee46456ad729ea6e5cbba21950dd6310781ace2c4ee1bf269580a730",
-    "815bd9677675c2de17f10b785eaa8022197ad27a646041d6c2dd6226e28afa67",
-    "4374b1695926784fc0b8f8ee0f885b70694eaf19f37c224884d40823fbba161d",
-    "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
-    "20802162500d3accbf6a0632e89a01190dd2d6d94e87eddc97ac475fe23193d0"
+    "98da2b0ac388de0f06aca6ca4b3b965a419255cc90bab55d90a5bc209f2bb1a2",
+    "290ec8e20950a77a110fff3f54c4e71b3811c55313266e0b9857406c55c5b56f"
   ],
   "ingredient_last_used": {
     "fine-art portrait photography": "2026-09-19T13:02:04.103105+00:00",
@@ -492,7 +504,7 @@
     "oxidized metal": "2026-09-19T13:02:04.103105+00:00",
     "a fabric measuring tape": "2026-09-19T13:02:04.103105+00:00",
     "holding an ordinary object at waist height": "2026-09-20T11:30:15.418645+00:00",
-    "a crisp shirt with practical trousers": "2026-09-19T13:02:04.103105+00:00",
+    "a crisp shirt with practical trousers": "2026-09-20T15:59:19.912328+00:00",
     "pastel chalk illustration blended with photography": "2026-09-19T14:02:39.324028+00:00",
     "contemplative and philosophical": "2026-09-19T14:02:39.324028+00:00",
     "an art-deco room under renovation": "2026-09-19T14:02:39.324028+00:00",
@@ -643,6 +655,16 @@
     "subtle halation": "2026-09-20T15:04:20.471605+00:00",
     "an oversized everyday object scaled for a miniature-world scene (giant spoon, giant book, giant flower)": "2026-09-20T15:04:20.471605+00:00",
     "looking through a window": "2026-09-20T15:04:20.471605+00:00",
-    "casual workwear with realistic fabric creases": "2026-09-20T15:04:20.471605+00:00"
+    "casual workwear with realistic fabric creases": "2026-09-20T15:04:20.471605+00:00",
+    "botanical engraving aesthetic": "2026-09-20T15:59:19.912328+00:00",
+    "dramatic and cinematic": "2026-09-20T15:59:19.912328+00:00",
+    "a botanical nursery filled with labeled plants": "2026-09-20T15:59:19.912328+00:00",
+    "the subject is surrounded by objects arranged according to a subtle geometric rhythm": "2026-09-20T15:59:19.912328+00:00",
+    "reflection-assisted framing": "2026-09-20T15:59:19.912328+00:00",
+    "soft lavender, graphite, cream and moss": "2026-09-20T15:59:19.912328+00:00",
+    "aged plaster": "2026-09-20T15:59:19.912328+00:00",
+    "a small enamel tray": "2026-09-20T15:59:19.912328+00:00",
+    "opening a drawer or cabinet": "2026-09-20T15:59:19.912328+00:00",
+    "cylindrical transparent capsule/container product-ad composition": "2026-09-20T15:59:19.912328+00:00"
   }
 }
