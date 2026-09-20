@@ -50,6 +50,9 @@ USED_SIGNATURE_KEEP = 100_000
 RECENT_KEEP = 30
 
 MAX_ATTEMPTS = 10
+REQUEST_BUDGET_PER_RUN = 30  # hard cap on total OpenRouter requests per run,
+# protecting the combined daily quota of all configured keys across the
+# ~24 runs/day (raise this if you add many more keys)
 REQUEST_TIMEOUT = 60
 
 TELEGRAM_MAX_MESSAGE_LEN = 4096
@@ -1037,57 +1040,101 @@ def choose_unique_ingredients(state: dict):
 # OPENROUTER
 # ============================================================
 
-def get_free_models(api_key: str) -> list:
-    response = requests.get(
-        f"{OPENROUTER_API}/models",
-        headers={"Authorization": f"Bearer {api_key}"},
-        timeout=REQUEST_TIMEOUT,
-    )
-    response.raise_for_status()
+class KeyRotator:
+    """Cycles through all configured OpenRouter keys. Starts at a random
+    key (spreads load across runs) and rotates forward whenever the
+    current key is rate-limited or rejected — so a single run actually
+    uses the COMBINED quota of every configured key, instead of getting
+    stuck on one exhausted key for the whole run."""
 
-    models = response.json().get("data", [])
-    free = []
+    def __init__(self, keys: list):
+        if not keys:
+            raise ValueError("KeyRotator needs at least one key.")
+        self.keys = keys
+        self.index = random.randrange(len(keys))
 
-    for model in models:
-        pricing = model.get("pricing", {})
+    def current(self) -> str:
+        return self.keys[self.index]
 
+    def rotate(self) -> None:
+        self.index = (self.index + 1) % len(self.keys)
+
+    def __len__(self) -> int:
+        return len(self.keys)
+
+
+class RequestBudget:
+    """Hard cap on total OpenRouter HTTP requests for this run, so one
+    run can never burn through the entire combined daily quota of all
+    configured keys (leaving room for the other ~23 runs that day)."""
+
+    def __init__(self, limit: int):
+        self.remaining = limit
+
+    def take(self) -> bool:
+        if self.remaining <= 0:
+            return False
+        self.remaining -= 1
+        return True
+
+
+def get_free_models(key_rotator: "KeyRotator") -> list:
+    last_err = None
+
+    for _ in range(len(key_rotator)):
+        api_key = key_rotator.current()
         try:
-            prompt_cost = float(pricing.get("prompt", "1") or "1")
-            completion_cost = float(pricing.get("completion", "1") or "1")
-        except (TypeError, ValueError):
+            response = requests.get(
+                f"{OPENROUTER_API}/models",
+                headers={"Authorization": f"Bearer {api_key}"},
+                timeout=REQUEST_TIMEOUT,
+            )
+            response.raise_for_status()
+
+            models = response.json().get("data", [])
+            free = []
+
+            for model in models:
+                pricing = model.get("pricing", {})
+                try:
+                    prompt_cost = float(pricing.get("prompt", "1") or "1")
+                    completion_cost = float(pricing.get("completion", "1") or "1")
+                except (TypeError, ValueError):
+                    continue
+                if prompt_cost == 0 and completion_cost == 0:
+                    model_id = model.get("id")
+                    if model_id:
+                        free.append(model_id)
+
+            def size_tier(model_id: str) -> int:
+                name = model_id.lower()
+                if any(k in name for k in (
+                    "mini", "lite", "nano", "tiny", "small",
+                    "1b", "2b", "3b", "4b", "7b"
+                )):
+                    return 2
+                if any(k in name for k in (
+                    "large", "super", "ultra", "max", "pro",
+                    "xl", "70b", "72b", "90b", "120b", "405b"
+                )):
+                    return 0
+                return 1
+
+            tiers = {0: [], 1: [], 2: []}
+            for model_id in free:
+                tiers[size_tier(model_id)].append(model_id)
+            for tier in tiers.values():
+                random.shuffle(tier)
+
+            return tiers[0] + tiers[1] + tiers[2]
+
+        except Exception as exc:
+            last_err = f"key ...{api_key[-4:]} -> {exc}"
+            print(f"Listing models failed, rotating key: {last_err}")
+            key_rotator.rotate()
             continue
 
-        if prompt_cost == 0 and completion_cost == 0:
-            model_id = model.get("id")
-            if model_id:
-                free.append(model_id)
-
-    def size_tier(model_id: str) -> int:
-        name = model_id.lower()
-
-        if any(k in name for k in (
-            "mini", "lite", "nano", "tiny", "small",
-            "1b", "2b", "3b", "4b", "7b"
-        )):
-            return 2
-
-        if any(k in name for k in (
-            "large", "super", "ultra", "max", "pro",
-            "xl", "70b", "72b", "90b", "120b", "405b"
-        )):
-            return 0
-
-        return 1
-
-    tiers = {0: [], 1: [], 2: []}
-
-    for model_id in free:
-        tiers[size_tier(model_id)].append(model_id)
-
-    for tier in tiers.values():
-        random.shuffle(tier)
-
-    return tiers[0] + tiers[1] + tiers[2]
+    raise RuntimeError(f"Could not list models with any configured key. Last error: {last_err}")
 
 
 def has_markers(markers: list):
@@ -1105,12 +1152,13 @@ def has_markers(markers: list):
 
 
 def call_openrouter(
-    api_key: str,
+    key_rotator: "KeyRotator",
     free_models: list,
     messages: list,
     max_tokens: int = 2000,
     validator=None,
     max_models_to_try: int = 6,
+    budget: "RequestBudget" = None,
 ) -> str:
 
     last_error = None
@@ -1121,51 +1169,74 @@ def call_openrouter(
     )
 
     for model_id in models_to_try:
-        try:
-            response = requests.post(
-                f"{OPENROUTER_API}/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json",
-                },
-                json={
-                    "model": model_id,
-                    "messages": messages,
-                    "max_tokens": max_tokens,
-                    "temperature": 1.0,
-                },
-                timeout=REQUEST_TIMEOUT,
-            )
+        keys_tried_for_this_model = 0
 
-            if response.status_code != 200:
-                last_error = (
-                    f"{model_id} -> HTTP {response.status_code}: "
-                    f"{response.text[:250]}"
+        while keys_tried_for_this_model < len(key_rotator):
+            if budget is not None and not budget.take():
+                raise RuntimeError(
+                    f"Request budget exhausted for this run. Last error: {last_error}"
                 )
-                continue
 
-            data = response.json()
-            content = data["choices"][0]["message"]["content"]
+            api_key = key_rotator.current()
+            try:
+                response = requests.post(
+                    f"{OPENROUTER_API}/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {api_key}",
+                        "Content-Type": "application/json",
+                    },
+                    json={
+                        "model": model_id,
+                        "messages": messages,
+                        "max_tokens": max_tokens,
+                        "temperature": 1.0,
+                    },
+                    timeout=REQUEST_TIMEOUT,
+                )
 
-            if not content or not content.strip():
-                last_error = f"{model_id} -> empty response"
-                continue
+                if response.status_code in (429, 401, 402):
+                    # rate-limited / unauthorized / payment-required — a
+                    # quota or key problem, not a model problem: rotate
+                    # to the next key and retry the SAME model with it.
+                    last_error = (
+                        f"{model_id} -> key ...{api_key[-4:]} "
+                        f"HTTP {response.status_code}: {response.text[:150]}"
+                    )
+                    print(f"Rotating OpenRouter key ({last_error})")
+                    key_rotator.rotate()
+                    keys_tried_for_this_model += 1
+                    continue
 
-            content = content.strip()
+                if response.status_code != 200:
+                    last_error = (
+                        f"{model_id} -> HTTP {response.status_code}: "
+                        f"{response.text[:250]}"
+                    )
+                    break  # not a quota issue — move on to the next model
 
-            if validator and not validator(content):
-                last_error = f"{model_id} -> validation failed"
-                print(f"Skipping {model_id}: {last_error}")
-                continue
+                data = response.json()
+                content = data["choices"][0]["message"]["content"]
 
-            print(f"Used free model: {model_id}")
-            return content
+                if not content or not content.strip():
+                    last_error = f"{model_id} -> empty response"
+                    break
 
-        except Exception as exc:
-            last_error = f"{model_id} -> {exc}"
+                content = content.strip()
+
+                if validator and not validator(content):
+                    last_error = f"{model_id} -> validation failed"
+                    print(f"Skipping {model_id}: {last_error}")
+                    break
+
+                print(f"Used free model: {model_id} (key ...{api_key[-4:]})")
+                return content
+
+            except Exception as exc:
+                last_error = f"{model_id} -> {exc}"
+                break
 
     raise RuntimeError(
-        f"All free OpenRouter models failed. Last error: {last_error}"
+        f"All free OpenRouter models/keys failed. Last error: {last_error}"
     )
 
 
@@ -1683,8 +1754,9 @@ def main():
 
     openrouter_keys_raw = env("OPENROUTER_API_KEY")
     openrouter_keys = [k.strip() for k in openrouter_keys_raw.split(",") if k.strip()]
-    openrouter_key = random.choice(openrouter_keys)
-    print(f"Using 1 of {len(openrouter_keys)} configured OpenRouter key(s) for this run.")
+    key_rotator = KeyRotator(openrouter_keys)
+    request_budget = RequestBudget(REQUEST_BUDGET_PER_RUN)
+    print(f"Configured {len(openrouter_keys)} OpenRouter key(s); starting at key ...{key_rotator.current()[-4:]}.")
 
     # Stock-photo APIs (Pexels/Pixabay/Unsplash) are no longer used —
     # base images now come from the local Tiyashi reference photo set.
@@ -1725,19 +1797,10 @@ def main():
 
     used_signatures = set(state.get("used_signatures", []))
 
-    free_models = []
-    key_order = [openrouter_key] + [k for k in openrouter_keys if k != openrouter_key]
-    for key_attempt in key_order:
-        try:
-            free_models = get_free_models(key_attempt)
-            openrouter_key = key_attempt
-            break
-        except Exception as exc:
-            print(f"OpenRouter key ending in ...{key_attempt[-4:]} failed to list models: {exc}")
-            continue
-
-    if not free_models:
-        print("::error::No free OpenRouter models currently available (all configured keys failed).")
+    try:
+        free_models = get_free_models(key_rotator)
+    except Exception as exc:
+        print(f"::error::No free OpenRouter models currently available (all configured keys failed): {exc}")
         sys.exit(1)
 
     print(f"Found {len(free_models)} free OpenRouter models.")
@@ -1752,6 +1815,10 @@ def main():
     approved_ingredients = None
 
     for attempt in range(1, MAX_ATTEMPTS + 1):
+
+        if request_budget.remaining <= 0:
+            print(f"Request budget ({REQUEST_BUDGET_PER_RUN}) exhausted — stopping attempts for this run.")
+            break
 
         ingredients, subject, signature = choose_unique_ingredients(state)
 
@@ -1772,7 +1839,7 @@ def main():
 
         try:
             generated_raw = call_openrouter(
-                openrouter_key,
+                key_rotator,
                 free_models,
                 build_generation_messages(
                     recent_summaries,
@@ -1780,6 +1847,7 @@ def main():
                 ),
                 max_tokens=4000,
                 validator=has_markers(GEN_MARKERS),
+                budget=request_budget,
             )
 
             candidate = parse_delimited(
@@ -1788,7 +1856,7 @@ def main():
             )
 
             review_raw = call_openrouter(
-                openrouter_key,
+                key_rotator,
                 free_models,
                 build_review_messages(
                     candidate,
@@ -1797,6 +1865,7 @@ def main():
                 ),
                 max_tokens=1200,
                 validator=has_markers(REVIEW_MARKERS),
+                budget=request_budget,
             )
 
             review = parse_delimited(
