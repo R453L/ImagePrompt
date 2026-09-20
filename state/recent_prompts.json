@@ -1,11 +1,6 @@
 {
   "recent": [
     {
-      "id": 32,
-      "summary": "[Risograph Carnival Night] One candid laugh inside a neon carnival dream",
-      "posted_at": "2026-09-17T16:51:44.243663+00:00"
-    },
-    {
       "id": 33,
       "summary": "[Botanical Shadow Jazz Portrait] The Jazz Club That Grew Shadows",
       "posted_at": "2026-09-17T20:13:58.448731+00:00"
@@ -383,32 +378,49 @@
         "subject": "a couple together in a natural candid moment"
       },
       "image_source": "Tiyashi (9B5EEAF6-B7AB-4EE9-98AD-F7B54287B8D3.png)"
+    },
+    {
+      "id": 62,
+      "summary": "[Newspaper collage architectural scale] A toolbox becomes architecture",
+      "posted_at": "2026-09-20T05:04:00.333830+00:00",
+      "signature": "98da2b0ac388de0f06aca6ca4b3b965a419255cc90bab55d90a5bc209f2bb1a2",
+      "ingredients": {
+        "medium": "newspaper collage aesthetic",
+        "fusion_medium": "",
+        "mood": "focused and purposeful",
+        "setting": "a striped, multicolored mineral mountainside",
+        "twist": "a small everyday object appears at architectural scale",
+        "camera": "three-quarter portrait with visible surroundings",
+        "subject": "a couple together in a natural candid moment"
+      },
+      "image_source": "Tiyashi (9B5EEAF6-B7AB-4EE9-98AD-F7B54287B8D3.png)"
     }
   ],
-  "last_id": 61,
+  "last_id": 62,
   "used_signatures": [
-    "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
     "e487881aae5a8955c54fbeabf8d847b3530a7ed65954d58639ccbb45b458e028",
     "c313dfd0eaf952af64ca1dd01d676435ec020f54cea208173c94c0be664b35ae",
-    "73ecde93ef6b2ffc34da96590fe19e8792c7c5952e04df9e30767339faadaaeb",
-    "bbc42289325f136f888bfe54fa10c238ab541d25ff75925f581395584f367bc4",
-    "815bd9677675c2de17f10b785eaa8022197ad27a646041d6c2dd6226e28afa67",
-    "cd8b7151ed9213c61a7f6ee1766eea1ef2ef6f40825c16bd1d23c63583b5654b",
-    "20802162500d3accbf6a0632e89a01190dd2d6d94e87eddc97ac475fe23193d0",
-    "290ec8e20950a77a110fff3f54c4e71b3811c55313266e0b9857406c55c5b56f",
-    "cd58f0a13172137727f96ffc7e9739472a93c7e5cea5d31b57c0a5d85aaf1173",
-    "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
-    "5d014c920767e8f87cf5c785720229ef3e462e4ab6b2759738fe14d7164c3c23",
-    "ba21d4c9e63be1b2950c4bdcc274fa76e019402ccca7ad8283c2818954bd1cf6",
-    "fb247363d3f3465ddb39bac1a0734c20a636e289772eeccfb441892b47e18d43",
-    "7da9e82cbc4d2915ce07db2d34db149cfd95fef69ea9b078a044f9adc8be1d20",
-    "1a12bf72a521b9689c983b23e7fb3a72cc5f1bef30e3001dc6ed7e7f3752d7ba",
-    "bba4e26e6227a1f4a6159f42525a1bedd5b224dbed4226b8f958d85c0b1f5351",
     "6b20997b8ede17afd15c97576ff7a46ef30ca3f7932d78439cd3e7778482ed2b",
-    "7cd8fb89c3ea8494c712417d5dea2663bea3cb1f5cc38da4616d36d7540bfccd",
+    "5d014c920767e8f87cf5c785720229ef3e462e4ab6b2759738fe14d7164c3c23",
+    "bba4e26e6227a1f4a6159f42525a1bedd5b224dbed4226b8f958d85c0b1f5351",
+    "290ec8e20950a77a110fff3f54c4e71b3811c55313266e0b9857406c55c5b56f",
+    "815bd9677675c2de17f10b785eaa8022197ad27a646041d6c2dd6226e28afa67",
     "a317e09d680a182ec74926b75221c6d36df5da3ae9b0b5049b14efc743c7e569",
     "811b2d63d680f6bc1682d607057241111b8d9e5a932073c85b7bc2957c76fb1d",
-    "d24b3d778b372ba89ce786cd7dd7fcbc13bcd13fed0d7cbc2acb93b40c06de5c"
+    "73ecde93ef6b2ffc34da96590fe19e8792c7c5952e04df9e30767339faadaaeb",
+    "fb247363d3f3465ddb39bac1a0734c20a636e289772eeccfb441892b47e18d43",
+    "98da2b0ac388de0f06aca6ca4b3b965a419255cc90bab55d90a5bc209f2bb1a2",
+    "cd58f0a13172137727f96ffc7e9739472a93c7e5cea5d31b57c0a5d85aaf1173",
+    "1a12bf72a521b9689c983b23e7fb3a72cc5f1bef30e3001dc6ed7e7f3752d7ba",
+    "20802162500d3accbf6a0632e89a01190dd2d6d94e87eddc97ac475fe23193d0",
+    "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
+    "d24b3d778b372ba89ce786cd7dd7fcbc13bcd13fed0d7cbc2acb93b40c06de5c",
+    "cd8b7151ed9213c61a7f6ee1766eea1ef2ef6f40825c16bd1d23c63583b5654b",
+    "7da9e82cbc4d2915ce07db2d34db149cfd95fef69ea9b078a044f9adc8be1d20",
+    "7cd8fb89c3ea8494c712417d5dea2663bea3cb1f5cc38da4616d36d7540bfccd",
+    "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
+    "ba21d4c9e63be1b2950c4bdcc274fa76e019402ccca7ad8283c2818954bd1cf6",
+    "bbc42289325f136f888bfe54fa10c238ab541d25ff75925f581395584f367bc4"
   ],
   "ingredient_last_used": {
     "fine-art portrait photography": "2026-09-19T13:02:04.103105+00:00",
@@ -480,7 +492,7 @@
     "old painted wood": "2026-09-19T23:02:35.282495+00:00",
     "a simple analog wristwatch": "2026-09-19T23:02:35.282495+00:00",
     "carrying a folded item": "2026-09-19T23:02:35.282495+00:00",
-    "soft casual clothing suited to a quiet indoor scene": "2026-09-20T02:02:45.893475+00:00",
+    "soft casual clothing suited to a quiet indoor scene": "2026-09-20T05:04:00.333876+00:00",
     "black-and-white darkroom photography": "2026-09-20T00:02:15.207816+00:00",
     "brooding and intense": "2026-09-20T00:02:15.207816+00:00",
     "a flea market under canvas roofs": "2026-09-20T00:02:15.207816+00:00",
@@ -520,6 +532,15 @@
     "linen": "2026-09-20T03:04:06.108417+00:00",
     "a sketchbook": "2026-09-20T03:04:06.108417+00:00",
     "mid-laugh candid selfie gesture, arm extended toward the camera": "2026-09-20T03:04:06.108417+00:00",
-    "a structured jacket over a simple top": "2026-09-20T03:04:06.108417+00:00"
+    "a structured jacket over a simple top": "2026-09-20T03:04:06.108417+00:00",
+    "newspaper collage aesthetic": "2026-09-20T05:04:00.333876+00:00",
+    "focused and purposeful": "2026-09-20T05:04:00.333876+00:00",
+    "a striped, multicolored mineral mountainside": "2026-09-20T05:04:00.333876+00:00",
+    "a small everyday object appears at architectural scale": "2026-09-20T05:04:00.333876+00:00",
+    "three-quarter portrait with visible surroundings": "2026-09-20T05:04:00.333876+00:00",
+    "deep red, charcoal, paper white and faded blue": "2026-09-20T05:04:00.333876+00:00",
+    "rough concrete": "2026-09-20T05:04:00.333876+00:00",
+    "a small toolbox": "2026-09-20T05:04:00.333876+00:00",
+    "walking slowly through the environment": "2026-09-20T05:04:00.333876+00:00"
   }
 }
