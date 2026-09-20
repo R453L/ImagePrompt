@@ -329,28 +329,45 @@
         "subject": "a person interacting with an interesting object"
       },
       "image_source": "Tiyashi (E23E4499-163D-43D4-964A-7B460756AFEF.png)"
+    },
+    {
+      "id": 58,
+      "summary": "[Infrared Darkroom Flea Market Twist] Infrared darkroom shadows at the flea market",
+      "posted_at": "2026-09-20T00:02:15.207797+00:00",
+      "signature": "c313dfd0eaf952af64ca1dd01d676435ec020f54cea208173c94c0be664b35ae",
+      "ingredients": {
+        "medium": "black-and-white darkroom photography",
+        "fusion_medium": "",
+        "mood": "brooding and intense",
+        "setting": "a flea market under canvas roofs",
+        "twist": "one surface appears to be made from an unexpected but believable material",
+        "camera": "infrared-inspired tonal response",
+        "subject": "a person interacting with an interesting object"
+      },
+      "image_source": "Tiyashi (DC73AFE4-C3E2-4A9C-93F5-9BB366F0AF9A.png)"
     }
   ],
-  "last_id": 57,
+  "last_id": 58,
   "used_signatures": [
-    "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
-    "bba4e26e6227a1f4a6159f42525a1bedd5b224dbed4226b8f958d85c0b1f5351",
-    "1a12bf72a521b9689c983b23e7fb3a72cc5f1bef30e3001dc6ed7e7f3752d7ba",
-    "d24b3d778b372ba89ce786cd7dd7fcbc13bcd13fed0d7cbc2acb93b40c06de5c",
-    "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
-    "fb247363d3f3465ddb39bac1a0734c20a636e289772eeccfb441892b47e18d43",
-    "cd8b7151ed9213c61a7f6ee1766eea1ef2ef6f40825c16bd1d23c63583b5654b",
-    "bbc42289325f136f888bfe54fa10c238ab541d25ff75925f581395584f367bc4",
-    "20802162500d3accbf6a0632e89a01190dd2d6d94e87eddc97ac475fe23193d0",
     "7cd8fb89c3ea8494c712417d5dea2663bea3cb1f5cc38da4616d36d7540bfccd",
     "ba21d4c9e63be1b2950c4bdcc274fa76e019402ccca7ad8283c2818954bd1cf6",
+    "20802162500d3accbf6a0632e89a01190dd2d6d94e87eddc97ac475fe23193d0",
     "290ec8e20950a77a110fff3f54c4e71b3811c55313266e0b9857406c55c5b56f",
-    "cd58f0a13172137727f96ffc7e9739472a93c7e5cea5d31b57c0a5d85aaf1173",
-    "e487881aae5a8955c54fbeabf8d847b3530a7ed65954d58639ccbb45b458e028",
+    "c313dfd0eaf952af64ca1dd01d676435ec020f54cea208173c94c0be664b35ae",
     "811b2d63d680f6bc1682d607057241111b8d9e5a932073c85b7bc2957c76fb1d",
-    "a317e09d680a182ec74926b75221c6d36df5da3ae9b0b5049b14efc743c7e569",
+    "fb247363d3f3465ddb39bac1a0734c20a636e289772eeccfb441892b47e18d43",
     "73ecde93ef6b2ffc34da96590fe19e8792c7c5952e04df9e30767339faadaaeb",
-    "6b20997b8ede17afd15c97576ff7a46ef30ca3f7932d78439cd3e7778482ed2b"
+    "d24b3d778b372ba89ce786cd7dd7fcbc13bcd13fed0d7cbc2acb93b40c06de5c",
+    "bbc42289325f136f888bfe54fa10c238ab541d25ff75925f581395584f367bc4",
+    "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
+    "cd8b7151ed9213c61a7f6ee1766eea1ef2ef6f40825c16bd1d23c63583b5654b",
+    "1a12bf72a521b9689c983b23e7fb3a72cc5f1bef30e3001dc6ed7e7f3752d7ba",
+    "cd58f0a13172137727f96ffc7e9739472a93c7e5cea5d31b57c0a5d85aaf1173",
+    "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
+    "e487881aae5a8955c54fbeabf8d847b3530a7ed65954d58639ccbb45b458e028",
+    "a317e09d680a182ec74926b75221c6d36df5da3ae9b0b5049b14efc743c7e569",
+    "6b20997b8ede17afd15c97576ff7a46ef30ca3f7932d78439cd3e7778482ed2b",
+    "bba4e26e6227a1f4a6159f42525a1bedd5b224dbed4226b8f958d85c0b1f5351"
   ],
   "ingredient_last_used": {
     "fine-art portrait photography": "2026-09-19T13:02:04.103105+00:00",
@@ -422,6 +439,16 @@
     "old painted wood": "2026-09-19T23:02:35.282495+00:00",
     "a simple analog wristwatch": "2026-09-19T23:02:35.282495+00:00",
     "carrying a folded item": "2026-09-19T23:02:35.282495+00:00",
-    "soft casual clothing suited to a quiet indoor scene": "2026-09-19T23:02:35.282495+00:00"
+    "soft casual clothing suited to a quiet indoor scene": "2026-09-19T23:02:35.282495+00:00",
+    "black-and-white darkroom photography": "2026-09-20T00:02:15.207816+00:00",
+    "brooding and intense": "2026-09-20T00:02:15.207816+00:00",
+    "a flea market under canvas roofs": "2026-09-20T00:02:15.207816+00:00",
+    "one surface appears to be made from an unexpected but believable material": "2026-09-20T00:02:15.207816+00:00",
+    "infrared-inspired tonal response": "2026-09-20T00:02:15.207816+00:00",
+    "warm brown, pale green and faded yellow": "2026-09-20T00:02:15.207816+00:00",
+    "scratched acrylic": "2026-09-20T00:02:15.207816+00:00",
+    "a small analog camera": "2026-09-20T00:02:15.207816+00:00",
+    "pausing mid-task and looking toward a nearby sound": "2026-09-20T00:02:15.207816+00:00",
+    "a refined everyday outfit without visible logos": "2026-09-20T00:02:15.207816+00:00"
   }
 }
