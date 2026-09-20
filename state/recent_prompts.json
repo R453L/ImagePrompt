@@ -1,11 +1,6 @@
 {
   "recent": [
     {
-      "id": 39,
-      "summary": "[Thermal Charcoal Monastic Sketch] Monastery shadows meet pet companion",
-      "posted_at": "2026-09-18T18:22:36.208492+00:00"
-    },
-    {
       "id": 40,
       "summary": "[Orchard Collage Slow Shutter] Orchard collage slow shutter torn paper",
       "posted_at": "2026-09-18T19:47:04.761808+00:00",
@@ -460,39 +455,56 @@
         "subject": "a solo person in a natural candid portrait"
       },
       "image_source": "Tiyashi (EFBD40E8-16CC-4A8E-9837-8F6E89660309.png)"
+    },
+    {
+      "id": 69,
+      "summary": "[Retro print-advertising split-portrait] Through the wire, autumn calls",
+      "posted_at": "2026-09-20T18:01:10.141619+00:00",
+      "signature": "d4773df8c4042026ce36584377a6c98b11025446a604b3276af6e9ecd840af8d",
+      "ingredients": {
+        "medium": "retro print-advertising aesthetic",
+        "fusion_medium": "",
+        "mood": "adventurous and curious",
+        "setting": "a warm-toned early-autumn park with turning leaves",
+        "twist": "a practical cable, hose, wire, or rope creates a strong compositional line",
+        "camera": "through-window framing",
+        "subject": "a solo person in a natural candid portrait"
+      },
+      "image_source": "Tiyashi (F18C5055-F153-48A7-AD45-0233BBC6996D.png)"
     }
   ],
-  "last_id": 68,
+  "last_id": 69,
   "used_signatures": [
-    "811b2d63d680f6bc1682d607057241111b8d9e5a932073c85b7bc2957c76fb1d",
     "e487881aae5a8955c54fbeabf8d847b3530a7ed65954d58639ccbb45b458e028",
-    "ba21d4c9e63be1b2950c4bdcc274fa76e019402ccca7ad8283c2818954bd1cf6",
     "3fd2da014c7f820bad2eb0bb240d0aded43cfd84e4bc418139a95e56e443f24c",
-    "bba4e26e6227a1f4a6159f42525a1bedd5b224dbed4226b8f958d85c0b1f5351",
-    "df628044ee46456ad729ea6e5cbba21950dd6310781ace2c4ee1bf269580a730",
-    "d24b3d778b372ba89ce786cd7dd7fcbc13bcd13fed0d7cbc2acb93b40c06de5c",
+    "cd8b7151ed9213c61a7f6ee1766eea1ef2ef6f40825c16bd1d23c63583b5654b",
+    "811b2d63d680f6bc1682d607057241111b8d9e5a932073c85b7bc2957c76fb1d",
+    "bbc42289325f136f888bfe54fa10c238ab541d25ff75925f581395584f367bc4",
     "af9991d4ababe070a8273b50aefeeac5f1744708214003a88f5d2dfa2c70d9ea",
     "77f58ae120ad75af7d08cdcc5acfa3030f601bc1d5950baa5d330dd5bbcdda96",
-    "9a8274528068ed5e9d3dca765de2f6d3460f9af7c1c6a79e9d4fb78a4b6fb8d4",
-    "cd58f0a13172137727f96ffc7e9739472a93c7e5cea5d31b57c0a5d85aaf1173",
-    "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
-    "6b20997b8ede17afd15c97576ff7a46ef30ca3f7932d78439cd3e7778482ed2b",
-    "815bd9677675c2de17f10b785eaa8022197ad27a646041d6c2dd6226e28afa67",
-    "c313dfd0eaf952af64ca1dd01d676435ec020f54cea208173c94c0be664b35ae",
-    "fb247363d3f3465ddb39bac1a0734c20a636e289772eeccfb441892b47e18d43",
-    "20802162500d3accbf6a0632e89a01190dd2d6d94e87eddc97ac475fe23193d0",
-    "cd8b7151ed9213c61a7f6ee1766eea1ef2ef6f40825c16bd1d23c63583b5654b",
-    "73ecde93ef6b2ffc34da96590fe19e8792c7c5952e04df9e30767339faadaaeb",
-    "5d014c920767e8f87cf5c785720229ef3e462e4ab6b2759738fe14d7164c3c23",
     "4374b1695926784fc0b8f8ee0f885b70694eaf19f37c224884d40823fbba161d",
-    "bbc42289325f136f888bfe54fa10c238ab541d25ff75925f581395584f367bc4",
-    "7cd8fb89c3ea8494c712417d5dea2663bea3cb1f5cc38da4616d36d7540bfccd",
-    "a317e09d680a182ec74926b75221c6d36df5da3ae9b0b5049b14efc743c7e569",
-    "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
-    "7da9e82cbc4d2915ce07db2d34db149cfd95fef69ea9b078a044f9adc8be1d20",
+    "d24b3d778b372ba89ce786cd7dd7fcbc13bcd13fed0d7cbc2acb93b40c06de5c",
+    "290ec8e20950a77a110fff3f54c4e71b3811c55313266e0b9857406c55c5b56f",
+    "73ecde93ef6b2ffc34da96590fe19e8792c7c5952e04df9e30767339faadaaeb",
+    "9a8274528068ed5e9d3dca765de2f6d3460f9af7c1c6a79e9d4fb78a4b6fb8d4",
+    "bba4e26e6227a1f4a6159f42525a1bedd5b224dbed4226b8f958d85c0b1f5351",
+    "953f53a1ebcba40b3ced6e9ad5e7bb68c95cd8f9e1b3f31215b7993e0e8e0e96",
     "1a12bf72a521b9689c983b23e7fb3a72cc5f1bef30e3001dc6ed7e7f3752d7ba",
+    "d4773df8c4042026ce36584377a6c98b11025446a604b3276af6e9ecd840af8d",
+    "c313dfd0eaf952af64ca1dd01d676435ec020f54cea208173c94c0be664b35ae",
+    "df628044ee46456ad729ea6e5cbba21950dd6310781ace2c4ee1bf269580a730",
+    "5d014c920767e8f87cf5c785720229ef3e462e4ab6b2759738fe14d7164c3c23",
+    "fb247363d3f3465ddb39bac1a0734c20a636e289772eeccfb441892b47e18d43",
+    "815bd9677675c2de17f10b785eaa8022197ad27a646041d6c2dd6226e28afa67",
+    "20802162500d3accbf6a0632e89a01190dd2d6d94e87eddc97ac475fe23193d0",
+    "7cd8fb89c3ea8494c712417d5dea2663bea3cb1f5cc38da4616d36d7540bfccd",
+    "cd58f0a13172137727f96ffc7e9739472a93c7e5cea5d31b57c0a5d85aaf1173",
+    "ba21d4c9e63be1b2950c4bdcc274fa76e019402ccca7ad8283c2818954bd1cf6",
+    "7da9e82cbc4d2915ce07db2d34db149cfd95fef69ea9b078a044f9adc8be1d20",
+    "39d868e4231a5736e813ab47d7d29029888d7bfb012f91c2d926f8261db9de68",
     "98da2b0ac388de0f06aca6ca4b3b965a419255cc90bab55d90a5bc209f2bb1a2",
-    "290ec8e20950a77a110fff3f54c4e71b3811c55313266e0b9857406c55c5b56f"
+    "6b20997b8ede17afd15c97576ff7a46ef30ca3f7932d78439cd3e7778482ed2b",
+    "a317e09d680a182ec74926b75221c6d36df5da3ae9b0b5049b14efc743c7e569"
   ],
   "ingredient_last_used": {
     "fine-art portrait photography": "2026-09-19T13:02:04.103105+00:00",
@@ -536,7 +548,7 @@
     "a vintage-inspired outfit using generic period details": "2026-09-19T19:28:18.109183+00:00",
     "isometric illustration": "2026-09-19T20:32:17.013476+00:00",
     "quietly absurd": "2026-09-20T08:02:16.892645+00:00",
-    "a warm-toned early-autumn park with turning leaves": "2026-09-19T20:32:17.013476+00:00",
+    "a warm-toned early-autumn park with turning leaves": "2026-09-20T18:01:10.141637+00:00",
     "a practical lamp casts an unusually specific geometric shadow": "2026-09-19T20:32:17.013476+00:00",
     "subtle dutch angle for visual tension": "2026-09-19T20:32:17.013476+00:00",
     "forest green, clay, parchment and charcoal": "2026-09-20T15:04:20.471605+00:00",
@@ -610,7 +622,7 @@
     "a striped, multicolored mineral mountainside": "2026-09-20T05:04:00.333876+00:00",
     "a small everyday object appears at architectural scale": "2026-09-20T05:04:00.333876+00:00",
     "three-quarter portrait with visible surroundings": "2026-09-20T06:14:35.782951+00:00",
-    "deep red, charcoal, paper white and faded blue": "2026-09-20T05:04:00.333876+00:00",
+    "deep red, charcoal, paper white and faded blue": "2026-09-20T18:01:10.141637+00:00",
     "rough concrete": "2026-09-20T05:04:00.333876+00:00",
     "a small toolbox": "2026-09-20T08:02:16.892645+00:00",
     "walking slowly through the environment": "2026-09-20T05:04:00.333876+00:00",
@@ -655,7 +667,7 @@
     "subtle halation": "2026-09-20T15:04:20.471605+00:00",
     "an oversized everyday object scaled for a miniature-world scene (giant spoon, giant book, giant flower)": "2026-09-20T15:04:20.471605+00:00",
     "looking through a window": "2026-09-20T15:04:20.471605+00:00",
-    "casual workwear with realistic fabric creases": "2026-09-20T15:04:20.471605+00:00",
+    "casual workwear with realistic fabric creases": "2026-09-20T18:01:10.141637+00:00",
     "botanical engraving aesthetic": "2026-09-20T15:59:19.912328+00:00",
     "dramatic and cinematic": "2026-09-20T15:59:19.912328+00:00",
     "a botanical nursery filled with labeled plants": "2026-09-20T15:59:19.912328+00:00",
@@ -665,6 +677,13 @@
     "aged plaster": "2026-09-20T15:59:19.912328+00:00",
     "a small enamel tray": "2026-09-20T15:59:19.912328+00:00",
     "opening a drawer or cabinet": "2026-09-20T15:59:19.912328+00:00",
-    "cylindrical transparent capsule/container product-ad composition": "2026-09-20T15:59:19.912328+00:00"
+    "cylindrical transparent capsule/container product-ad composition": "2026-09-20T15:59:19.912328+00:00",
+    "retro print-advertising aesthetic": "2026-09-20T18:01:10.141637+00:00",
+    "adventurous and curious": "2026-09-20T18:01:10.141637+00:00",
+    "a practical cable, hose, wire, or rope creates a strong compositional line": "2026-09-20T18:01:10.141637+00:00",
+    "through-window framing": "2026-09-20T18:01:10.141637+00:00",
+    "film grain": "2026-09-20T18:01:10.141637+00:00",
+    "a ceramic mug with visible wear": "2026-09-20T18:01:10.141637+00:00",
+    "standing still while the environment shows motion": "2026-09-20T18:01:10.141637+00:00"
   }
 }
