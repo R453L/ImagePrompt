@@ -1437,10 +1437,17 @@ The caption must:
 - prefer plain, punchy, slightly imperfect phrasing and contractions
   (e.g. "this one's kinda unreal", "not gonna lie this slaps", "obsessed
   with how this turned out") over descriptive scene-painting
-- end with 2 to 4 relevant, high-traffic discovery hashtags (e.g. a mix
-  of broad ones like #AIart #AIphotography #AIgenerated and one tied to
-  the specific AI tool named in APP, like #GPTImage2 or #Midjourney) —
-  hashtags are separate from the sentence, space-separated, no commas
+- end with 2 to 4 relevant, high-traffic discovery hashtags. Draw from a
+  MIX of these (rotate — do not use the same combination every time):
+  broad/high-volume: #AIart #AIartcommunity #AIartist #AIgenerated
+  #AIphotography #digitalart #conceptart #generativeart #AIartdaily
+  #AIartwork
+  tool-specific (pick the one matching APP): #Midjourney #MidjourneyAI
+  #GPTImage2 #DALLE3 #StableDiffusion #NanoBanana #GeminiAI
+  Never use sexualized/thirst-trap-style tags (e.g. #AImodel #AIgirl
+  #AIbeauty) — keep tags squarely about the art/technology, not the
+  person's body.
+  Hashtags are separate from the sentence, space-separated, no commas.
 
 OUTPUT EXACTLY THIS FORMAT:
 
