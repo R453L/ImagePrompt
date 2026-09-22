@@ -1856,7 +1856,7 @@ APPROVE only if ALL requirements pass.
 15. Caption sounds human and casual.
 16. Caption has at least one emoji.
 17. Caption naturally recommends an AI tool.
-18. Caption does not use I, we, my, our, us.
+18. Caption uses a natural first-person account voice and does not describe the account owner as a third-person subject.
 19. Caption does not contain "full prompt".
 20. Caption has no URL.
 21. Caption has no em dash and no double hyphen.
