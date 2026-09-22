@@ -1661,7 +1661,7 @@ WARDROBE:
 
 RECENT CONCEPTS TO AVOID:
 {recent_block}
-
+{trend_overlay}
 BANNED CLICHES:
 - cosmic or celestial imagery unless the required setting genuinely
   requires a night sky or space environment
