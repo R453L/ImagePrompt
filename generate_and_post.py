@@ -1082,7 +1082,37 @@ def save_state(state: dict) -> None:
 
 def next_id(state: dict) -> int:
     return int(state.get("last_id", 0)) + 1
+TREND_KEYWORDS_PATH = "state/trend_keywords.json"
 
+
+def load_fallback_trend_keywords() -> list:
+    """Load safe local keywords when no external trend source is available."""
+    try:
+        with open(TREND_KEYWORDS_PATH, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+
+        if isinstance(payload, dict):
+            keywords = payload.get("keywords", [])
+        else:
+            keywords = payload
+
+        if isinstance(keywords, list):
+            return [
+                str(keyword).strip()
+                for keyword in keywords
+                if str(keyword).strip()
+            ]
+    except (OSError, json.JSONDecodeError, TypeError):
+        pass
+
+    return [
+        "AI art",
+        "AI photography",
+        "generative art",
+        "image generation",
+        "cinematic portrait",
+        "editorial portrait",
+    ]
 
 INGREDIENT_COOLDOWN_DAYS = 120  # how long an ingredient value stays de-prioritized
 INGREDIENT_MIN_WEIGHT = 0.15    # never fully blocked — evergreen concepts can resurface
