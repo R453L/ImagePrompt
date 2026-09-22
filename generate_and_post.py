@@ -1656,7 +1656,7 @@ The caption must:
   phone, not like polished ad copy
 - contain 1 to 3 emojis
 - naturally mention the recommended AI tool
-- never use I, we, my, our, or us
+- write naturally in first person as the account owner, using I, me, my, or I'm when appropriate; never describe the account owner as "this person", "the subject", "the creator", "she", "he", or "they"
 - never say "full prompt"
 - never include a URL
 - never use an em dash
