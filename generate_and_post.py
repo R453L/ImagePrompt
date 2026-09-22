@@ -1942,7 +1942,7 @@ CANDIDATE CAPTION:
 
 RECENT CONCEPTS:
 {recent_block}
-
+{build_trend_overlay_block()}
 Return ONLY:
 
 ===VERDICT===
