@@ -1539,7 +1539,7 @@ def build_generation_messages(
         "\n".join(f"- {item}" for item in recent_summaries)
         if recent_summaries else "(none yet)"
     )
-
+    trend_overlay = build_trend_overlay_block()
     fusion_medium = ingredients.get("fusion_medium", "")
     if fusion_medium:
         fusion_block = f"""
