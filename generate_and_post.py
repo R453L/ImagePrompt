@@ -1753,6 +1753,20 @@ The caption must:
 - prefer plain, punchy, slightly imperfect phrasing and contractions
   (e.g. "this one's kinda unreal", "not gonna lie this slaps", "obsessed
   with how this turned out") over descriptive scene-painting
+- WATAA / PYAR CONTEXT WORDS: look back at the PROMPT you just wrote.
+  If it involves water, ocean, sea, rain, a lake, river, pool,
+  waterfall or any other water/aquatic element, naturally work the
+  word "wataa" into one sentence of the caption as an ordinary word —
+  it must fit the sentence grammatically, never dropped in on its own
+  and never turned into a hashtag. If the PROMPT involves love,
+  romance, affection or tenderness, naturally work the word "pyar"
+  into the caption the same way. If both apply, include both words
+  naturally in the caption. If neither applies, do not use either
+  word — most captions will not use them. Every time you do use
+  "wataa" and/or "pyar", phrase the sentence differently from however
+  you may have phrased it before — never settle into a repeated
+  template or fixed wording for these, since sounding canned/repetitive
+  hurts reach.
 - end with 2 to 4 relevant, high-traffic discovery hashtags. Draw from a
   MIX of these (rotate — do not use the same combination every time):
   broad/high-volume: #AIart #AIartcommunity #AIartist #AIgenerated
@@ -2070,11 +2084,18 @@ def safe_truncate_html(text: str, limit: int) -> str:
 
 
 # ============================================================
-# CAPTION ENHANCEMENT (ADDITIVE ONLY — keyword flavor + fixed footer)
+# CAPTION ENHANCEMENT (ADDITIVE ONLY — fixed footer + word cap)
 # ============================================================
-# This runs entirely in plain Python after the LLM-written caption comes
-# back, so none of this depends on extra LLM instructions/tokens. The
-# existing caption generation/review prompts and rules are untouched.
+# The wataa/pyar context words are handled entirely by the LLM inside
+# the single existing generation call (see the "WATAA / PYAR CONTEXT
+# WORDS" rule in CAPTION RULES above) — the model looks at the PROMPT
+# it just wrote and naturally works "wataa"/"pyar" into the CAPTION
+# itself when water/love themes are present, with fresh phrasing every
+# time. No second API call, no fixed template sentences here — this
+# keeps everything to one generation call per attempt, same as before.
+#
+# This block only adds the fixed footer lines and enforces the 280-word
+# cap, in plain Python, after the caption comes back.
 
 CAPTION_WORD_LIMIT = 280  # word cap for the caption body. The later
 # "Full prompt link: ..." section is appended AFTER this limit is
@@ -2085,79 +2106,6 @@ CAPTION_FIXED_FOOTER = (
     "Prompt in the first comment"
 )
 
-# If the image PROMPT text mentions water/love, one of these full,
-# natural-sounding sentences is added to the caption — never a bare
-# word — so "wataa"/"pyar" always read as part of a real sentence.
-WATER_FLAVOR_SENTENCES = [
-    "This water scene has such a calm wataa vibe, I really love how it turned out.",
-    "There's a chill wataa energy running through this one that I can't get enough of.",
-    "Something about this wataa mood just feels so calming to look at.",
-    "Not gonna lie, this wataa scene turned out way better than I expected.",
-    "This wataa vibe is exactly the kind of calm I needed today.",
-]
-
-LOVE_FLAVOR_SENTENCES = [
-    "I really felt the pyar in this one, especially in the way the whole scene comes together.",
-    "This one's got so much pyar in it, not gonna lie.",
-    "There's real pyar in this shot, you can just feel it.",
-    "Something about this scene is just full of pyar.",
-    "Ngl this whole thing radiates pyar.",
-]
-
-BOTH_FLAVOR_SENTENCES = [
-    "There's something about this wataa mood that brings out the pyar in the whole scene.",
-    "This wataa vibe mixed with all the pyar in the scene just hits different.",
-    "The wataa energy here somehow makes the pyar feel even stronger.",
-    "Between the wataa mood and all that pyar, this one's a whole vibe.",
-]
-
-
-def pick_flavor_sentence(prompt_text: str) -> str:
-    """If the image PROMPT text mentions water and/or love, pick one
-    full natural sentence built around 'wataa'/'pyar'. Plain
-    deterministic keyword check — kept out of the LLM prompt on purpose
-    to reduce LLM load/variance. Returns '' when neither keyword is
-    present, so the caption stays the normal human-style caption."""
-    text = (prompt_text or "").lower()
-    has_water = "water" in text
-    has_love = "love" in text
-
-    if has_water and has_love:
-        return random.choice(BOTH_FLAVOR_SENTENCES)
-    if has_water:
-        return random.choice(WATER_FLAVOR_SENTENCES)
-    if has_love:
-        return random.choice(LOVE_FLAVOR_SENTENCES)
-    return ""
-
-
-def insert_sentence_before_hashtags(caption: str, sentence: str) -> str:
-    """Insert a full sentence right before the trailing hashtag block so
-    it reads as a natural extra sentence in the caption, never mixed
-    into or turned into a hashtag."""
-    if not sentence:
-        return caption
-
-    tokens = caption.split()
-
-    hashtag_start = len(tokens)
-    for i in range(len(tokens) - 1, -1, -1):
-        if tokens[i].startswith("#"):
-            hashtag_start = i
-        else:
-            break
-
-    main_tokens = tokens[:hashtag_start]
-    hashtag_tokens = tokens[hashtag_start:]
-
-    main_text = " ".join(main_tokens).strip()
-    combined = f"{main_text} {sentence}".strip() if main_text else sentence
-
-    if hashtag_tokens:
-        combined = f"{combined} {' '.join(hashtag_tokens)}"
-
-    return combined
-
 
 def enforce_caption_word_limit(text: str, limit: int) -> str:
     words = text.split()
@@ -2166,16 +2114,11 @@ def enforce_caption_word_limit(text: str, limit: int) -> str:
     return " ".join(words[:limit])
 
 
-def build_enhanced_caption(caption_raw: str, prompt_text: str) -> str:
-    """Add the water/love flavor sentence and the fixed footer lines to
-    the LLM-written caption, then enforce the 280-word cap. Everything
-    the original caption engine already produces (tone, emojis,
-    hashtags, AI-tool mention, etc.) is left exactly as-is; if neither
-    water nor love is in the prompt, the caption is untouched apart from
-    the fixed footer."""
-    flavor_sentence = pick_flavor_sentence(prompt_text)
-    caption = insert_sentence_before_hashtags(caption_raw, flavor_sentence)
-    caption = f"{caption}\n\n{CAPTION_FIXED_FOOTER}"
+def build_enhanced_caption(caption_raw: str) -> str:
+    """Append the fixed footer lines to the LLM-written caption, then
+    enforce the 280-word cap. The caption itself (including any
+    wataa/pyar wording) is left exactly as the model wrote it."""
+    caption = f"{caption_raw}\n\n{CAPTION_FIXED_FOOTER}"
     caption = enforce_caption_word_limit(caption, CAPTION_WORD_LIMIT)
     return caption
 
@@ -2426,7 +2369,7 @@ def main():
     # fixed "Use Chatgpt/Gemini/Midjourney/grok..." + "Prompt in the
     # first comment" footer, capped at 280 words. The paste link below
     # is appended AFTER this, so it is never counted toward the cap.
-    caption_raw = build_enhanced_caption(caption_raw, prompt_text)
+    caption_raw = build_enhanced_caption(caption_raw)
 
     hook_html = escape_html(hook)
     app_html = escape_html(app_rec)
