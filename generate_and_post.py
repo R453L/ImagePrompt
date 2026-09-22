@@ -1113,7 +1113,21 @@ def load_fallback_trend_keywords() -> list:
         "cinematic portrait",
         "editorial portrait",
     ]
+def build_trend_overlay_block() -> str:
+    """Keep trend wording optional while preserving the existing human caption style."""
+    keywords = load_fallback_trend_keywords()
+    keywords_text = ", ".join(keywords[:6])
 
+    return f"""
+TREND OVERLAY RULES:
+- Treat these terms as optional topical context, not as a keyword list: {keywords_text}
+- Keep the caption realistic, casual, and written from the account owner's first-person perspective.
+- Use at most one primary trend phrase and one supporting phrase.
+- Use a trend phrase only when it naturally matches the image, prompt, or AI tool.
+- Never force, repeat, or dump trend keywords into the caption.
+- If trend wording sounds awkward or robotic, omit it and keep the normal caption style.
+- If no usable trend phrase is available, write the caption normally without mentioning trends.
+"""
 INGREDIENT_COOLDOWN_DAYS = 120  # how long an ingredient value stays de-prioritized
 INGREDIENT_MIN_WEIGHT = 0.15    # never fully blocked — evergreen concepts can resurface
 
