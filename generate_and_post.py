@@ -2702,12 +2702,12 @@ def call_openrouter(
 
     last_error = None
 
-    candidate_pool = free_models[:max_models_to_try * 2] or free_models
+        candidate_pool = free_models[:max_models_to_try * 2] or free_models
     models_to_try = random.sample(
         candidate_pool, min(max_models_to_try, len(candidate_pool))
     )
 
-        MAX_KEYS_PER_MODEL = 3
+    MAX_KEYS_PER_MODEL = 3
 
     for model_id in models_to_try:
         keys_tried_for_this_model = 0
