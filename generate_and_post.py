@@ -102,6 +102,7 @@ MEDIUM_POOL = [
     "120 medium-format portrait photography",
     "large-format studio photography",
     "instant-film snapshot aesthetic",
+    "cinematic epic-fantasy movie-poster composition",
     "tintype wet-plate photographic aesthetic",
     "cyanotype photographic print treatment",
     "black-and-white darkroom photography",
