@@ -2708,9 +2708,9 @@ def call_openrouter(
     )
 
     for model_id in models_to_try:
-        keys_tried_for_this_model = 0
+    keys_tried_for_this_model = 0
 
-        while keys_tried_for_this_model < len(key_rotator):
+    while keys_tried_for_this_model < min(3, len(key_rotator)):
             if budget is not None and not budget.take():
                 raise RuntimeError(
                     f"Request budget exhausted for this run. Last error: {last_error}"
